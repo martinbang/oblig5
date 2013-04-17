@@ -1,6 +1,8 @@
 package com.gpstracker.map;
 
 
+import java.util.ArrayList;
+
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
@@ -142,8 +144,20 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 		String s = "Din posisjon nå: " + l + "," + ll;
 		Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
 		
-		GeoPoint New_geopoint = new GeoPoint((int)(l*1e6),(int)(ll*1e6));
-        controller.animateTo(New_geopoint);
+		GeoPoint newPoint = new GeoPoint((int)(l*1e6),(int)(ll*1e6));
+        controller.animateTo(newPoint);    
+        
+        Drawable drawable = this.getResources().getDrawable(R.drawable.marker_red);
+		
+		//lager et nytt overlayItem og legger den i MyItemzedoverlay listen
+		OverlayItem overlayItem = new OverlayItem(newPoint, "", "");
+
+        itemizedOverlay = new MyItemizedOverlay(drawable,this);
+        itemizedOverlay.addOverlay(overlayItem);
+
+        // legger tul overlayet til kartet
+        mapView.getOverlays().add(itemizedOverlay);
+        mapView.invalidate();
 		
 	}
 
