@@ -147,7 +147,7 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 		GeoPoint newPoint = new GeoPoint((int)(l*1e6),(int)(ll*1e6));
         controller.animateTo(newPoint);    
         
-        Drawable drawable = this.getResources().getDrawable(R.drawable.marker_red);
+        Drawable drawable = this.getResources().getDrawable(R.drawable.trackmark);
 		
 		//lager et nytt overlayItem og legger den i MyItemzedoverlay listen
 		OverlayItem overlayItem = new OverlayItem(newPoint, "", "");
