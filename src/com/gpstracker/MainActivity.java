@@ -3,11 +3,14 @@ package com.gpstracker;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
+import com.google.android.gcm.GCMRegistrar;
+import com.gpstracker.gcm.ServiceTestClass;
 import com.gpstracker.map.TrackerMapActivity;
 
 public class MainActivity extends Activity {
@@ -19,10 +22,32 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
+        registerThisDevice();
+        
         //kun for testing
         TestButtonForMap();
     }
 
+    /**
+     * Registrerer telefonen hos GCM-server, hvis ikke allerede registrert
+     */
+    private void registerThisDevice()
+    {
+    	final String SENDER_ID = "579021654488";
+    	final String TAG = "";
+    	
+    	GCMRegistrar.checkDevice(this);
+    	GCMRegistrar.checkManifest(this);
+    	final String regId = GCMRegistrar.getRegistrationId(this);
+    	if(regId.equals(""))
+    	{
+    		GCMRegistrar.register(this, SENDER_ID);
+    	} else {
+    		Log.v(TAG, "Already registered");
+    	}
+   
+    	
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
