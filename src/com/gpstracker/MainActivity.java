@@ -1,6 +1,9 @@
 package com.gpstracker;
 
+import android.app.ActionBar;
+import android.app.ActionBar.Tab;
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +13,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.google.android.gcm.GCMRegistrar;
+import com.gpstracker.conf.ConfigurationFragment;
 import com.gpstracker.gcm.ServiceTestClass;
 import com.gpstracker.map.TrackerMapActivity;
 
@@ -18,16 +22,35 @@ public class MainActivity extends Activity {
 	private Button btnMap;
 	
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) 
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
         registerThisDevice();
+        initTabs();
         
         //kun for testing
-        TestButtonForMap();
+        //TestButtonForMap();
     }
 
+    private void initTabs()
+    {
+    	ActionBar actionBar = getActionBar();
+    	actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+    	actionBar.setDisplayShowTitleEnabled(false);
+    	addTab(actionBar, "Instillinger", "configurations", ConfigurationFragment.class);
+    }
+    
+    private <T extends Fragment> void addTab(ActionBar actionBar, String title, String name, Class<T> c)
+    {
+    	Tab tab = actionBar.newTab();
+		tab.setText(title);
+		tab.setTabListener(new GTTabListener<T>(this, name, c));
+    	
+    	actionBar.addTab(tab);
+    }
+    
     /**
      * Registrerer telefonen hos GCM-server, hvis ikke allerede registrert
      */
@@ -60,7 +83,7 @@ public class MainActivity extends Activity {
      */
     public void TestButtonForMap(){
     	
-    	btnMap = (Button) findViewById(R.id.buttonMap);
+    	//btnMap = (Button) findViewById(R.id.buttonMap);
     	btnMap.setOnClickListener(new OnClickListener() {
 			
 			@Override

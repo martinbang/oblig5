@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <Switch
+        android:id="@+id/switch_send_on_time_passed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send posisjonsdata etter n minutter" />
+
+    <TextView
+        android:id="@+id/textView_minutes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Minutter"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <EditText
+        android:id="@+id/editText_minutes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="number" >
+
+        <requestFocus />
+    </EditText>
+
+    <Switch
+        android:id="@+id/switch_send_on_location_changed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send posisjonsdata etter forflyttet n meter" />
+
+    <TextView
+        android:id="@+id/textView_meters"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Meter"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <EditText
+        android:id="@+id/editText_meters"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="number" />
+
+</LinearLayout>
