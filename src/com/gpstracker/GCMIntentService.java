@@ -21,8 +21,8 @@ public class GCMIntentService extends GCMBaseIntentService
 	@Override
 	protected void onMessage(Context arg0, Intent arg1) 
 	{
-		// TODO Auto-generated method stub
-		
+		Log.d("MESSAGE", "Mottok beskjed");
+		Log.d("MESSAGE", arg1.getExtras().getString("msg"));
 	}
 
 	@Override
