@@ -30,5 +30,10 @@ public class LogFragment extends Fragment
 		
 		return view;
 	}
+	
+//	private LogItem[] getLogItems()
+//	{
+//		
+//	}
 
 }

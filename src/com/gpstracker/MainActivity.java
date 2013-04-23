@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gcm.GCMRegistrar;
 import com.gpstracker.conf.Configuration;
@@ -77,9 +78,13 @@ public class MainActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-    	if(item.getItemId() == R.id.powerService)
+    	Configuration conf = Configuration.getCurrentConfiguration(this);
+    	
+    	if(conf.getUserName().equals(""))
+    		Toast.makeText(this, getResources().getString(R.string.register_fragment_name_not_set), Toast.LENGTH_SHORT).show();
+    	
+    	else if(item.getItemId() == R.id.powerService)
     	{
-    		Configuration conf = Configuration.getCurrentConfiguration(this);
     		if(conf.getRegistered())
     		{
     			item.setIcon(android.R.drawable.button_onoff_indicator_off);
