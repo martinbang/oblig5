@@ -38,7 +38,8 @@
             </intent-filter>
         </activity>
         <activity android:name="com.gpstracker.map.TrackerMapActivity"></activity>
-    
+        <activity android:name="com.gpstracker.conf.RegisterActivity"></activity>
+    	
     
     <receiver android:name="com.google.android.gcm.GCMBroadcastReceiver" android:permission="com.google.android.c2dm.permission.SEND">
         <intent-filter>

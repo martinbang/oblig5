@@ -15,22 +15,23 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.android.gcm.GCMRegistrar;
+import com.gpstracker.conf.Configuration;
 
 public class ServiceTestClass 
 {
 	public static final long BACKOFF_MILLI_SECOUNDS = 2000;
 	public static final int MAX_ATTEMPTS = 5;
 	
-	public static String SERVER_URL = "http://kenh.dyndns.org/android5/tomcat/register";
+	public static String SERVER_URL = "http://kenh.dyndns.org/android5/tomcat";
+	public static String REGISTER_URN = "/register";
+	public static String UNREGISTER_URN = "/unregister";
 	
-	public static void register(final Context context, String name, 
-			String email, final String regId)
+	public static void register(final Context context, String name)
 	{
-		final String serverUrl = SERVER_URL;
+		final String serverUrl = SERVER_URL + REGISTER_URN;
 		final Map<String, String> params = new HashMap<String, String>();
-		params.put("regId", regId);
+		params.put("regId", GCMRegistrar.getRegistrationId(context));
 		params.put("name", name);
-		params.put("email", email);
 		
 		AsyncTask.execute(new Runnable()
 		{
@@ -47,7 +48,43 @@ public class ServiceTestClass
 			}
 		});
 			
-		GCMRegistrar.setRegisteredOnServer(context,  true);		
+		GCMRegistrar.setRegisteredOnServer(context,  true);
+		
+		Configuration conf = Configuration.getCurrentConfiguration(context);
+		conf.setUserName(name);
+		conf.setRegistered(true);
+		conf.commit(context);
+	}
+	
+	public static void unRegister(final Context context, String name)
+	{
+		final String serverUrl = SERVER_URL + UNREGISTER_URN;
+		final Map<String, String> params = new HashMap<String, String>();
+		params.put("regId", GCMRegistrar.getRegistrationId(context));
+		params.put("name", name);
+		
+		AsyncTask.execute(new Runnable()
+		{
+
+			@Override
+			public void run() 
+			{
+				try 
+				{
+					post(serverUrl, params);
+				} catch (IOException e) 
+				{
+					Log.d("ERROR", e.getMessage());
+				}
+				
+			}
+			
+		});
+		
+		GCMRegistrar.setRegisteredOnServer(context, false);
+		Configuration conf = Configuration.getCurrentConfiguration(context);
+		conf.setRegistered(false);
+		conf.commit(context);
 	}
 	
 	private static void post(String endpoint, Map<String, String> params) throws IOException

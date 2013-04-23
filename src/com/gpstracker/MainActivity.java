@@ -1,25 +1,26 @@
 package com.gpstracker;
 
-import android.app.ActionBar;
-import android.app.ActionBar.Tab;
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.google.android.gcm.GCMRegistrar;
-import com.gpstracker.conf.ConfigurationFragment;
+import com.gpstracker.conf.Configuration;
 import com.gpstracker.gcm.ServiceTestClass;
 import com.gpstracker.map.TrackerMapActivity;
 
 public class MainActivity extends Activity {
 	
 	private Button btnMap;
+	public static Activity activity;
+	public static Handler handler = new Handler();
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -28,27 +29,13 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         
         registerThisDevice();
-        initTabs();
+        
+        activity = this;
+        
+        GTTabListener.initTabs(this);
         
         //kun for testing
         //TestButtonForMap();
-    }
-
-    private void initTabs()
-    {
-    	ActionBar actionBar = getActionBar();
-    	actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-    	actionBar.setDisplayShowTitleEnabled(false);
-    	addTab(actionBar, "Instillinger", "configurations", ConfigurationFragment.class);
-    }
-    
-    private <T extends Fragment> void addTab(ActionBar actionBar, String title, String name, Class<T> c)
-    {
-    	Tab tab = actionBar.newTab();
-		tab.setText(title);
-		tab.setTabListener(new GTTabListener<T>(this, name, c));
-    	
-    	actionBar.addTab(tab);
     }
     
     /**
@@ -57,7 +44,7 @@ public class MainActivity extends Activity {
     private void registerThisDevice()
     {
     	final String SENDER_ID = "579021654488";
-    	final String TAG = "";
+    	final String TAG = "REGISTER";
     	
     	GCMRegistrar.checkDevice(this);
     	GCMRegistrar.checkManifest(this);
@@ -65,19 +52,52 @@ public class MainActivity extends Activity {
     	if(regId.equals(""))
     	{
     		GCMRegistrar.register(this, SENDER_ID);
-    	} else {
+    		
+    	} else     	
     		Log.v(TAG, "Already registered");
-    		ServiceTestClass.register(this, "name", "email", regId);
-    	}
+    	
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        
+        //Setter ikonet til start-knappen etter om du er registrert eller ei
+        MenuItem powerService = menu.getItem(0);
+        
+        if(Configuration.getCurrentConfiguration(this).getRegistered())
+        	powerService.setIcon(android.R.drawable.button_onoff_indicator_on);
+        else
+        	powerService.setIcon(android.R.drawable.button_onoff_indicator_off);
+        
         return true;
     }
     
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+    	if(item.getItemId() == R.id.powerService)
+    	{
+    		Configuration conf = Configuration.getCurrentConfiguration(this);
+    		if(conf.getRegistered())
+    		{
+    			item.setIcon(android.R.drawable.button_onoff_indicator_off);
+    			ServiceTestClass.unRegister(this, conf.getUserName());
+    		} else
+    		{
+    			item.setIcon(android.R.drawable.button_onoff_indicator_on);
+    			ServiceTestClass.register(this, conf.getUserName());
+    		}
+    		GTTabListener.initTabs(this);
+    	}
+    		
+    	return super.onOptionsItemSelected(item);
+    }
+    
+    
+    
+   
     /**
      * Kun For testing mot google map greia
      */
