@@ -6,22 +6,24 @@ import android.content.SharedPreferences.Editor;
 
 public class Configuration 
 {
-	private static final String DEFAULT_USER_NAME = "username";
+	private static final String DEFAULT_USER_NAME = "";
 	private static final boolean DEFAULT_SEND_ON_TIME_PASSED = true;
 	private static final boolean DEFAULT_SEND_ON_USER_MOVED = true;
 	private static final int DEFAULT_MINUTES_BETWEEN_SEND = 5;
 	private static final int DEFAULT_METERS_BETWEEN_SEND = 50;
 	private static final int DEFAULT_ZOOM_LEVEL = 8;
-	
+	private static final boolean DEFAULT_IS_REGISTERED = false;
+
 	private final static int INDEX_USERNAME = 0;
 	private final static int INDEX_SEND_ON_TIME_PASSED = 1;
 	private final static int INDEX_SEND_ON_USER_MOVED = 2;
 	private final static int INDEX_MINUTES_BETWEEN_SEND = 3;
 	private final static int INDEX_METERS_BETWEEN_SEND = 4;
 	private final static int INDEX_ZOOM_LEVEL = 5;
+	private final static int INDEX_IS_REGISTERED = 6;
 	
 	private final static String PARAMETER_SEPARATOR = "-P";
-	private final int AVAILABLE_CONFIGURATIONS = 6;
+	private final int AVAILABLE_CONFIGURATIONS = 7;
 	private final static String PREF_NAME = "pref";
 	private final static String CONF_NAME = "conf";
 	
@@ -31,6 +33,7 @@ public class Configuration
 	private int rangeMinutes;
 	private int rangeMeters;
 	private int zoomLevel;
+	private boolean isRegistered;
 	
 	private Configuration()
 	{
@@ -40,6 +43,7 @@ public class Configuration
 		this.rangeMinutes = DEFAULT_MINUTES_BETWEEN_SEND;
 		this.rangeMeters = DEFAULT_METERS_BETWEEN_SEND;
 		this.zoomLevel = DEFAULT_ZOOM_LEVEL;
+		this.isRegistered = DEFAULT_IS_REGISTERED;
 	}
 	
 	private String getConfigurationString()
@@ -51,6 +55,7 @@ public class Configuration
 		confParameters[INDEX_MINUTES_BETWEEN_SEND] = rangeMinutes + "";
 		confParameters[INDEX_METERS_BETWEEN_SEND] = rangeMeters + "";
 		confParameters[INDEX_ZOOM_LEVEL] = zoomLevel + "";
+		confParameters[INDEX_IS_REGISTERED] = isRegistered + "";
 		
 		String confString = "";
 		for(String s : confParameters)
@@ -70,6 +75,7 @@ public class Configuration
 		conf.setMinutesBetweenSend(Integer.parseInt(confParameters[INDEX_MINUTES_BETWEEN_SEND]));
 		conf.setMetersBetweenSend(Integer.parseInt(confParameters[INDEX_METERS_BETWEEN_SEND]));
 		conf.setZoomLevel(Integer.parseInt(confParameters[INDEX_ZOOM_LEVEL]));
+		conf.setRegistered(confParameters[INDEX_IS_REGISTERED].equals("true"));
 		
 		return conf;
 	}
@@ -98,6 +104,7 @@ public class Configuration
 	public void setMinutesBetweenSend(int min){this.rangeMinutes = min;}
 	public void setMetersBetweenSend(int meters){this.rangeMeters = meters;}
 	public void setZoomLevel(int zoomLevel){this.zoomLevel = zoomLevel;}
+	public void setRegistered(Boolean isRegistered){this.isRegistered = isRegistered;}
 	
 	public String getUserName(){return username;}
 	public boolean getSendOnTimePassed(){return sendLocationOnTimePassed;}
@@ -105,4 +112,5 @@ public class Configuration
 	public int getMinutesBetweenSend(){return rangeMinutes;}
 	public int getMetersBetweenSend(){return rangeMeters;}
 	public int getZoomLevel(){return zoomLevel;}
+	public boolean getRegistered(){return isRegistered;}
 }

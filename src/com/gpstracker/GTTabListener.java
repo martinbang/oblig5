@@ -1,7 +1,13 @@
 package com.gpstracker;
 
+import com.gpstracker.conf.Configuration;
+import com.gpstracker.conf.ConfigurationFragment;
+import com.gpstracker.log.LogFragment;
+
 import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
+import android.app.ActionBar;
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -20,12 +26,36 @@ public class GTTabListener<T extends Fragment> implements TabListener
 		this.fragmentClass = cls;
 	}
 	
-	@Override
-	public void onTabReselected(Tab tab, FragmentTransaction ft) 
+	public static void initTabs(Activity activity)
 	{
-		
+		initTabs(activity, activity.getActionBar());
 	}
-
+	
+    public static void initTabs(Context context, ActionBar actionBar)
+    {
+    	Configuration conf = Configuration.getCurrentConfiguration(context);
+    	
+    	//ActionBar actionBar = activity.getActionBar();
+    	actionBar.removeAllTabs();
+    	actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+    	
+    	
+    	if(!conf.getRegistered())
+    		addTab(context, actionBar, "Registrer", "registration", RegisterFragment.class);
+    	
+    	addTab(context, actionBar, "Log", "log", LogFragment.class);
+    	addTab(context, actionBar, "Instillinger", "configurations", ConfigurationFragment.class);
+    }
+    
+    private static <T extends Fragment> void addTab(Context context, ActionBar actionBar, String title, String name, Class<T> c)
+    {
+    	Tab tab = actionBar.newTab();
+		tab.setText(title);
+		tab.setTabListener(new GTTabListener<T>(context, name, c));
+    	
+    	actionBar.addTab(tab);
+    }
+	
 	@Override
 	public void onTabSelected(Tab tab, FragmentTransaction ft) 
 	{
@@ -46,5 +76,7 @@ public class GTTabListener<T extends Fragment> implements TabListener
 		if(fragment != null)
 			ft.detach(fragment);
 	}
-
+	
+	@Override
+	public void onTabReselected(Tab tab, FragmentTransaction ft) {}
 }

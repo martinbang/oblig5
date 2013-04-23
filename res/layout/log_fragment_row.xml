@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/textViewMessageTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="4dp"
+        android:layout_below="@+id/textViewActionTitle"
+        android:layout_marginTop="0dp"
+        android:textColor="@android:color/darker_gray"
+        android:text="@string/log_fragment_row_title_message" />
+    
+    <TextView
+        android:id="@+id/textViewMessageContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="0dp"
+        android:layout_alignBaseline="@+id/textViewMessageTitle"
+        android:layout_alignBottom="@+id/textViewMessageTitle"
+        android:layout_alignLeft="@+id/textViewActionContent"
+        android:text="@string/log_fragment_row_title_message" />
+
+    <TextView
+        android:id="@+id/textViewActionTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="4dp"
+        android:layout_alignParentTop="true"
+        android:textColor="@android:color/darker_gray"
+        android:text="@string/log_fragment_row_title_action" />
+
+    <TextView
+        android:id="@+id/textViewActionContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/textViewMessageContent"
+        android:layout_toRightOf="@+id/textViewActionTitle"
+        android:layout_marginLeft="24dp"
+        android:textColor="@android:color/darker_gray"
+        android:text="@string/log_fragment_row_title_action" />
+
+    <TextView
+        android:id="@+id/textViewSenderTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/textViewMessageTitle"
+        android:layout_toLeftOf="@+id/textViewSenderContent"
+        android:layout_centerHorizontal="true"
+        android:textColor="@android:color/darker_gray"
+        android:text="@string/log_fragment_row_title_sender" />
+
+    <TextView
+        android:id="@+id/textViewSenderContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
+        android:layout_marginLeft="4dp"
+        android:layout_above="@+id/textViewMessageTitle"
+        android:layout_alignParentRight="true"
+        android:textColor="@android:color/holo_blue_bright"
+        android:text="@string/log_fragment_row_title_sender" />
+    
+
+
+</RelativeLayout>
