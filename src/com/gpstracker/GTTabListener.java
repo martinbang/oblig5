@@ -1,16 +1,19 @@
 package com.gpstracker;
 
-import com.gpstracker.conf.Configuration;
-import com.gpstracker.conf.ConfigurationFragment;
-import com.gpstracker.log.LogFragment;
-
+import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
+
+import com.gpstracker.conf.Configuration;
+import com.gpstracker.conf.ConfigurationFragment;
+import com.gpstracker.log.LogFragment;
+import com.gpstracker.map.TrackerMapActivity;
 
 public class GTTabListener<T extends Fragment> implements TabListener
 {
@@ -31,7 +34,7 @@ public class GTTabListener<T extends Fragment> implements TabListener
 		initTabs(activity, activity.getActionBar());
 	}
 	
-    public static void initTabs(Context context, ActionBar actionBar)
+    public static void initTabs(final Context context, ActionBar actionBar)
     {
     	Configuration conf = Configuration.getCurrentConfiguration(context);
     	
@@ -39,12 +42,40 @@ public class GTTabListener<T extends Fragment> implements TabListener
     	actionBar.removeAllTabs();
     	actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
     	
+    	Tab t = actionBar.newTab();
+    	t.setText("Map");
+    	t.setTabListener(new TabListener() {
+			
+			@Override
+			public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onTabSelected(Tab tab, FragmentTransaction ft) {
+				// TODO Auto-generated method stub
+				Intent i = new Intent(context, TrackerMapActivity.class);
+				context.startActivity(i);
+				Log.v("Map startet", "Map Startet");
+
+			}
+			
+			@Override
+			public void onTabReselected(Tab tab, FragmentTransaction ft) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+    	
     	
     	if(!conf.getRegistered())
     		addTab(context, actionBar, "Registrer", "registration", RegisterFragment.class);
     	
     	addTab(context, actionBar, "Log", "log", LogFragment.class);
     	addTab(context, actionBar, "Instillinger", "configurations", ConfigurationFragment.class);
+    	actionBar.addTab(t);
+    	
     }
     
     private static <T extends Fragment> void addTab(Context context, ActionBar actionBar, String title, String name, Class<T> c)
