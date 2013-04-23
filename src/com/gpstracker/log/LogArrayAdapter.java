@@ -40,6 +40,7 @@ public class LogArrayAdapter extends ArrayAdapter<LogItem>
 			holder.sender = (TextView)row.findViewById(R.id.textViewSenderContent);
 			holder.message = (TextView)row.findViewById(R.id.textViewMessageContent);
 			
+			
 			row.setTag(holder);
 		} else
 		{
@@ -54,7 +55,7 @@ public class LogArrayAdapter extends ArrayAdapter<LogItem>
 		return row;
 	}
 	
-	static class ItemHolder
+	private static class ItemHolder
 	{
 		TextView action;
 		TextView sender;

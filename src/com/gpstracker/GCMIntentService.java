@@ -17,7 +17,6 @@ public class GCMIntentService extends GCMBaseIntentService
 	private final String TAG_ADMIN_COMMAND = "cmd";
 	private final String ADMIN_COMMAND_KICK = "kick";
 	
-	
 	@Override
 	protected void onError(Context arg0, String arg1) 
 	{
@@ -28,18 +27,22 @@ public class GCMIntentService extends GCMBaseIntentService
 	@Override
 	protected void onMessage(Context context, Intent intent) 
 	{
+		String message = "";
+		String adminCommand = "";
+		
 		Bundle extras = intent.getExtras();//.getString(TAG_MESSAGE);
 		
-		String message = extras.getString(TAG_MESSAGE);
+		message += extras.getString(TAG_MESSAGE);
+		adminCommand += extras.getString(TAG_ADMIN_COMMAND);
 		
+		Log.d("COMMAND", "CMD: " + adminCommand);
 		Log.d("MESSAGE", "MSG: " + message);
 		
-		String adminCommand ="";
-		adminCommand += extras.getString(TAG_ADMIN_COMMAND);
-		Log.d("MESSAGE", "CMD: " + adminCommand);
-		
-		
-		if(adminCommand.equals(ADMIN_COMMAND_KICK))
+	}
+	
+	private void handleAdminCommand(Context context, String adminCmd)
+	{
+		if(adminCmd.equals(ADMIN_COMMAND_KICK))
 		{
 			Configuration conf = Configuration.getCurrentConfiguration(context);
 			conf.setRegistered(false);
