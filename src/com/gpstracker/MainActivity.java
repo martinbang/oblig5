@@ -2,8 +2,10 @@ package com.gpstracker;
 
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
+import android.app.ActionBar.TabListener;
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +17,7 @@ import android.widget.Button;
 import com.google.android.gcm.GCMRegistrar;
 import com.gpstracker.conf.ConfigurationFragment;
 import com.gpstracker.gcm.ServiceTestClass;
+
 import com.gpstracker.map.TrackerMapActivity;
 
 public class MainActivity extends Activity {
@@ -40,6 +43,31 @@ public class MainActivity extends Activity {
     	actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
     	actionBar.setDisplayShowTitleEnabled(false);
     	addTab(actionBar, "Instillinger", "configurations", ConfigurationFragment.class);
+    	Tab t = actionBar.newTab();
+    	t.setText("Map");
+    	t.setTabListener(new TabListener() {
+			
+			@Override
+			public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onTabSelected(Tab tab, FragmentTransaction ft) {
+				// TODO Auto-generated method stub
+				Intent i = new Intent(MainActivity.this, TrackerMapActivity.class);
+				startActivity(i);
+			}
+			
+			@Override
+			public void onTabReselected(Tab tab, FragmentTransaction ft) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+    	actionBar.addTab(t);
+    	
     }
     
     private <T extends Fragment> void addTab(ActionBar actionBar, String title, String name, Class<T> c)

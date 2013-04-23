@@ -49,8 +49,4 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 		return true;
 	}
 
-	
-	
-	 
-
 }
