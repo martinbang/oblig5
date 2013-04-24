@@ -45,28 +45,21 @@ public class GTTabListener<T extends Fragment> implements TabListener
     	
     	Tab t = actionBar.newTab();
     	t.setText("Map");
-    	t.setTabListener(new TabListener() {
+    	t.setTabListener(new TabListener() 
+    	{
+			@Override
+			public void onTabUnselected(Tab tab, FragmentTransaction ft) {}
 			
 			@Override
-			public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void onTabSelected(Tab tab, FragmentTransaction ft) {
-				// TODO Auto-generated method stub
+			public void onTabSelected(Tab tab, FragmentTransaction ft) 
+			{
 				Intent i = new Intent(context, TrackerMapActivity.class);
 				context.startActivity(i);
 				Log.v("Map startet", "Map Startet");
-
 			}
 			
 			@Override
-			public void onTabReselected(Tab tab, FragmentTransaction ft) {
-				// TODO Auto-generated method stub
-				
-			}
+			public void onTabReselected(Tab tab, FragmentTransaction ft) {}
 		});
     	
     	
@@ -99,7 +92,6 @@ public class GTTabListener<T extends Fragment> implements TabListener
 		{
 			ft.attach(fragment);
 		}
-		
 	}
 
 	@Override
