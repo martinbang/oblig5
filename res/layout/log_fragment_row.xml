@@ -63,7 +63,6 @@
         android:layout_marginLeft="4dp"
         android:layout_above="@+id/textViewMessageTitle"
         android:layout_alignParentRight="true"
-        android:textColor="@android:color/holo_blue_bright"
         android:text="@string/log_fragment_row_title_sender" />
     
 

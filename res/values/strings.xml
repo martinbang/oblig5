@@ -9,4 +9,7 @@
 	<string name="log_fragment_row_title_action">Action: </string>
 	<string name="log_fragment_row_title_sender">Sender: </string>
 	<string name="log_fragment_row_title_message">Message: </string>
+	<string name="log_default_action">Message</string>
+	<string name="log_default_sender">Gpstracker</string>
+	<string name="log_default_message">No recordings have been made</string>
 </resources>

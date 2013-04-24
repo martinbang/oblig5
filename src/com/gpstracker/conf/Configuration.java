@@ -13,6 +13,7 @@ public class Configuration
 	private static final int DEFAULT_METERS_BETWEEN_SEND = 50;
 	private static final int DEFAULT_ZOOM_LEVEL = 8;
 	private static final boolean DEFAULT_IS_REGISTERED = false;
+	private static final int DEFAULT_ID = -1;
 
 	private final static int INDEX_USERNAME = 0;
 	private final static int INDEX_SEND_ON_TIME_PASSED = 1;
@@ -21,9 +22,10 @@ public class Configuration
 	private final static int INDEX_METERS_BETWEEN_SEND = 4;
 	private final static int INDEX_ZOOM_LEVEL = 5;
 	private final static int INDEX_IS_REGISTERED = 6;
+	private final static int INDEX_ID = 7;
 	
 	private final static String PARAMETER_SEPARATOR = "-P";
-	private final int AVAILABLE_CONFIGURATIONS = 7;
+	private final int AVAILABLE_CONFIGURATIONS = 8;
 	private final static String PREF_NAME = "pref";
 	private final static String CONF_NAME = "conf";
 	
@@ -34,6 +36,7 @@ public class Configuration
 	private int rangeMeters;
 	private int zoomLevel;
 	private boolean isRegistered;
+	private int id;
 	
 	private Configuration()
 	{
@@ -44,6 +47,7 @@ public class Configuration
 		this.rangeMeters = DEFAULT_METERS_BETWEEN_SEND;
 		this.zoomLevel = DEFAULT_ZOOM_LEVEL;
 		this.isRegistered = DEFAULT_IS_REGISTERED;
+		this.id = DEFAULT_ID;
 	}
 	
 	private String getConfigurationString()
@@ -56,6 +60,7 @@ public class Configuration
 		confParameters[INDEX_METERS_BETWEEN_SEND] = rangeMeters + "";
 		confParameters[INDEX_ZOOM_LEVEL] = zoomLevel + "";
 		confParameters[INDEX_IS_REGISTERED] = isRegistered + "";
+		confParameters[INDEX_ID] = id + "";
 		
 		String confString = "";
 		for(String s : confParameters)
@@ -76,6 +81,7 @@ public class Configuration
 		conf.setMetersBetweenSend(Integer.parseInt(confParameters[INDEX_METERS_BETWEEN_SEND]));
 		conf.setZoomLevel(Integer.parseInt(confParameters[INDEX_ZOOM_LEVEL]));
 		conf.setRegistered(confParameters[INDEX_IS_REGISTERED].equals("true"));
+		conf.setId(Integer.parseInt(confParameters[INDEX_ID]));
 		
 		return conf;
 	}
@@ -105,6 +111,7 @@ public class Configuration
 	public void setMetersBetweenSend(int meters){this.rangeMeters = meters;}
 	public void setZoomLevel(int zoomLevel){this.zoomLevel = zoomLevel;}
 	public void setRegistered(Boolean isRegistered){this.isRegistered = isRegistered;}
+	public void setId(int id){this.id = id;}
 	
 	public String getUserName(){return username;}
 	public boolean getSendOnTimePassed(){return sendLocationOnTimePassed;}
@@ -113,4 +120,5 @@ public class Configuration
 	public int getMetersBetweenSend(){return rangeMeters;}
 	public int getZoomLevel(){return zoomLevel;}
 	public boolean getRegistered(){return isRegistered;}
+	public int getId(){return id;}
 }

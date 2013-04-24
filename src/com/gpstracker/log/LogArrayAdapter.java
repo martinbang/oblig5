@@ -1,14 +1,15 @@
 package com.gpstracker.log;
 
-import com.gpstracker.R;
-
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import com.gpstracker.R;
 
 public class LogArrayAdapter extends ArrayAdapter<LogItem>
 {
@@ -50,6 +51,8 @@ public class LogArrayAdapter extends ArrayAdapter<LogItem>
 		LogItem item = items[position];
 		holder.action.setText(item.action);
 		holder.sender.setText(item.sender);
+		holder.sender.setTextColor(item.color);
+		
 		holder.message.setText(item.message);
 		
 		return row;
