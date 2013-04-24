@@ -15,7 +15,6 @@ import android.widget.Toast;
  */
 public class GPSmanager {
 	
-	//TrackerMapActivity context;
 	
 	View v;
 	
@@ -39,7 +38,7 @@ public class GPSmanager {
 			.setMessage(msg)
 			.setCancelable(false)
 			.setPositiveButton(posMSG, new DialogInterface.OnClickListener() {
-				
+				//setter en onclick for "YES" button
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					// TODO Auto-generated method stub
@@ -49,6 +48,7 @@ public class GPSmanager {
 
 				}
 			})
+			//setter en Onclick for "NO" button
 			.setNegativeButton(negMSg, new DialogInterface.OnClickListener() {
 				
 				@Override
@@ -56,17 +56,15 @@ public class GPSmanager {
 					// TODO Auto-generated method stub
 					
 					dialog.cancel();
-					
 				}
 			});
-		
+		//lager dialogen
 		AlertDialog ad = alertDialogBuilder.create();
 		
+		//viser dialogen
 		ad.show();
 			
 		
 	}//end constructor
-	
-	
 	
 }//end class

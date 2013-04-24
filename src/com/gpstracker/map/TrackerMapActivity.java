@@ -1,8 +1,13 @@
 package com.gpstracker.map;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.drawable.Drawable;
 import android.location.Criteria;
 import android.location.Location;
@@ -13,9 +18,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
@@ -38,12 +40,19 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 	private CheckBox checkSatteliteView;
 	private CheckBox checkStreetView;
 	private OnClickListener checkBoxListener;
+	
+	private int updateMapMillisec = 5000;
+	private int updateMapMeters = 0;
+	
+	//Shared pref settings
+	public static final String SHARDE_PREFERENCES_NAME = "com.gps.location";
+	public static final String LATITUDE = "latitude";
+	public static final String LONGTITUDE = "longtitude";
 
-	
-	
 	private boolean setZoomeEnable = true;
 	
-	 Context c;
+	private String FILENAME = "location";
+	Context c;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,39 +60,40 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.trackermapactivity_layout);
 	
-	
+		//Legger til kart i onCreate:
 		initMap();
 		
 		
 	}// end onCreate
-
+	
+	/**
+	 * Map preferences
+	 */
 	public void initMap() {
 		
 		mapView = (MapView) findViewById(R.id.map_view);
 		mapView.setBuiltInZoomControls(setZoomeEnable);
 
 		 locManger = (LocationManager) getSystemService(LOCATION_SERVICE);
-		 
+		 //sjekker om Gps er slått på
 		 if(!locManger.isProviderEnabled(LocationManager.GPS_PROVIDER)){
 				GPSmanager gps = new GPSmanager("GPS", "GPS not enabled, want to enable?", "Yes", "No", this);
 		 }
 
 		 Criteria criteria = new Criteria();
-
 		 provider = locManger.getBestProvider(criteria, true);
-
-		Location location = locManger.getLastKnownLocation(provider);
+		 Location location = locManger.getLastKnownLocation(provider);
 
 		if (location != null) {
 			Log.v("Location", "Location changed");
 			onLocationChanged(location);
 		}
 
-		locManger.requestLocationUpdates(provider, 5000, 0, this);
+		locManger.requestLocationUpdates(provider, updateMapMillisec, updateMapMeters, this);
 
 		initCheckBoxes();
 		 
-	}
+	}//end initMap()
 
 	@Override
 	protected boolean isRouteDisplayed() {
@@ -99,11 +109,32 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 		
 		double latitude = location.getLatitude();
 		double longtitude = location.getLongitude();
+		
+		/**lagrer posisjonene i Shared preferenses*/
+		try {
 
-		toast("Latitude: " + latitude + "Longtitude: ");
+			SharedPreferences prefs = getApplicationContext()
+					.getSharedPreferences(SHARDE_PREFERENCES_NAME,
+							Context.MODE_WORLD_READABLE);
+			Editor editor = prefs.edit();
+			editor.putLong(LATITUDE, Double.doubleToLongBits(latitude));
+			editor.putLong(LONGTITUDE, Double.doubleToLongBits(longtitude));
+			editor.commit();
+
+			double l = Double.longBitsToDouble(prefs.getLong(LATITUDE, 0));
+			double ll = Double.longBitsToDouble(prefs.getLong(LONGTITUDE, 0));
+
+			String s = Double.toString(l);
+			String s1 = Double.toString(ll);
+
+			toast(s + " , " + s1);
+		} catch (Exception e) {
+			Log.v("Shared_PREFERNCE_ERROR", e.getMessage());
+		}
+		toast("Lat: " + latitude + " Lon: " + longtitude);
 		
 		GeoPoint point = new GeoPoint((int) (latitude * 1E6),(int) (longtitude * 1E6));
-
+		//saveLocation((int)latitude, (int)longtitude);
 		controller = mapView.getController();
 
 		controller.animateTo(point);
@@ -116,11 +147,11 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 
 		MyItemizedOverlay miO = new MyItemizedOverlay(drawable, this);
 
-		OverlayItem currentlocation = new OverlayItem(point," Current location", "Latitude: " + latitude + " , " + " Longtitude: " + longtitude);
+		OverlayItem currentlocation = new OverlayItem(point," Current location", "Lat: " + latitude + " , " + " Long: " + longtitude);
 
 		miO.addOverlay(currentlocation);
 		Log.v("OverlayItem", " Current Location added");
-		 mapOverlays.clear(); //settes denne fjerner den siste markør og viser kun siste posisjon
+		mapOverlays.clear(); //settes denne fjerner den siste markør og viser kun siste posisjon
 		mapOverlays.add(miO);
 		Log.v("OMap overlay", "Overlay added");
 	}
@@ -162,6 +193,7 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 					checkStreetView.setChecked(false);
 					mapView.setStreetView(false);
 					mapView.setSatellite(true);
+					Log.v("MapView", "Sattelite View enabled");
 
 				}
 				if (checkStreetView.isChecked()) {
@@ -169,6 +201,7 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 					checkSatteliteView.setChecked(false);
 					mapView.setSatellite(false);
 					mapView.setStreetView(true);
+					Log.v("MapView", "Street View enabled");
 				}
 
 			}
@@ -182,15 +215,13 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 	public void toast(String msg) {
 		Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
 	}
-	
-	
-	
+
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
 		
-		locManger.requestLocationUpdates(provider, 5000,0, this);
+		locManger.requestLocationUpdates(provider, updateMapMillisec,updateMapMeters, this);
 	}
 
 	@Override
@@ -200,6 +231,25 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 		locManger.removeUpdates(this);
 	}
 	
+	public void saveLocation(int lat, int lon){
+		
+		try {
+			FileOutputStream fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);
+			fos.write(lat);
+			fos.write(lon);
+			
+			fos.close();
+			Log.v("FILEWRITER", "Writing to file");
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}//end method
 	
-
+	
+	
+	
 }// end Activity
