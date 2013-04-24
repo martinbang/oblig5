@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+import android.app.Service;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -14,6 +15,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.test.ServiceTestCase;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,6 +29,7 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 import com.gpstracker.R;
+import com.gpstracker.gcm.ServiceTestClass;
 
 public class TrackerMapActivity extends MapActivity implements LocationListener {
 
@@ -43,6 +46,7 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 	
 	private int updateMapMillisec = 5000;
 	private int updateMapMeters = 0;
+	private int setZoomLvl = 15;
 	
 	//Shared pref settings
 	public static final String SHARDE_PREFERENCES_NAME = "com.gps.location";
@@ -71,11 +75,12 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 	 */
 	public void initMap() {
 		
-		mapView = (MapView) findViewById(R.id.map_view);
-		mapView.setBuiltInZoomControls(setZoomeEnable);
+		 mapView = (MapView) findViewById(R.id.map_view);
+		 mapView.setBuiltInZoomControls(setZoomeEnable);
 
 		 locManger = (LocationManager) getSystemService(LOCATION_SERVICE);
-		 //sjekker om Gps er slått på
+		 
+		 /**sjekker om pgs er slått på*/
 		 if(!locManger.isProviderEnabled(LocationManager.GPS_PROVIDER)){
 				GPSmanager gps = new GPSmanager("GPS", "GPS not enabled, want to enable?", "Yes", "No", this);
 		 }
@@ -107,10 +112,11 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 
 		Log.v("OnLocationChanged", "Location changed");
 		
+		/**Henter lengde og breddegrad*/
 		double latitude = location.getLatitude();
 		double longtitude = location.getLongitude();
 		
-		/**lagrer posisjonene i Shared preferenses*/
+		/**lagrer posisjonene i Shared preferenses(Lagrer siste posisjon)*/
 		try {
 
 			SharedPreferences prefs = getApplicationContext()
@@ -124,29 +130,34 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 			double l = Double.longBitsToDouble(prefs.getLong(LATITUDE, 0));
 			double ll = Double.longBitsToDouble(prefs.getLong(LONGTITUDE, 0));
 
-			String s = Double.toString(l);
-			String s1 = Double.toString(ll);
+			//String s = Double.toString(l); For testing
+			//String s1 = Double.toString(ll); For Testin at den leser korrekt fra sharedpref.
+			try{
+				
+				ServiceTestClass.updatePosition(l, ll, this);
+				Log.v("Updatepositions", "Posisions sendt");
+				
+			}catch(Exception e){
+				
+				Log.v("updatepossition", "Cant send pos" + e.getMessage());
+			}
 
-			toast(s + " , " + s1);
 		} catch (Exception e) {
 			Log.v("Shared_PREFERNCE_ERROR", e.getMessage());
 		}
+		
 		toast("Lat: " + latitude + " Lon: " + longtitude);
 		
 		GeoPoint point = new GeoPoint((int) (latitude * 1E6),(int) (longtitude * 1E6));
 		//saveLocation((int)latitude, (int)longtitude);
 		controller = mapView.getController();
-
 		controller.animateTo(point);
-
-		controller.setZoom(15);
+		controller.setZoom(setZoomLvl);
 
 		List<Overlay> mapOverlays = mapView.getOverlays();
-
+	
 		Drawable drawable = this.getResources().getDrawable(R.drawable.marker_red);
-
 		MyItemizedOverlay miO = new MyItemizedOverlay(drawable, this);
-
 		OverlayItem currentlocation = new OverlayItem(point," Current location", "Lat: " + latitude + " , " + " Long: " + longtitude);
 
 		miO.addOverlay(currentlocation);
@@ -154,6 +165,7 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 		mapOverlays.clear(); //settes denne fjerner den siste markør og viser kun siste posisjon
 		mapOverlays.add(miO);
 		Log.v("OMap overlay", "Overlay added");
+		
 	}
 
 	@Override
@@ -223,33 +235,13 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 		
 		locManger.requestLocationUpdates(provider, updateMapMillisec,updateMapMeters, this);
 	}
-
+	
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		locManger.removeUpdates(this);
 	}
-	
-	public void saveLocation(int lat, int lon){
-		
-		try {
-			FileOutputStream fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);
-			fos.write(lat);
-			fos.write(lon);
-			
-			fos.close();
-			Log.v("FILEWRITER", "Writing to file");
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}//end method
-	
-	
-	
+
 	
 }// end Activity

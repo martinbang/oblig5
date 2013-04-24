@@ -88,11 +88,11 @@ public class ServiceTestClass
 		conf.commit(context);
 	}
 	
-	public static void updatePosition(int lat, int lng, int id) {
+	public static void updatePosition(double lat, double lng, Context context) {
 		final Map<String, String> params = new HashMap<String, String>();
 		params.put("lat", lat + "");
 		params.put("lng", lng + "");
-		params.put("id", id + "");
+		params.put("id", Configuration.getCurrentConfiguration(context).getId() + "");
 
 		AsyncTask.execute(new Runnable()
 		{
