@@ -25,6 +25,7 @@ public class ServiceTestClass
 	public static String SERVER_URL = "http://kenh.dyndns.org/android5/tomcat";
 	public static String REGISTER_URN = "/register";
 	public static String UNREGISTER_URN = "/unregister";
+	public static String UPDATEPOS_URN = "/pos";
 	
 	public static void register(final Context context, String name)
 	{
@@ -85,6 +86,31 @@ public class ServiceTestClass
 		Configuration conf = Configuration.getCurrentConfiguration(context);
 		conf.setRegistered(false);
 		conf.commit(context);
+	}
+	
+	public static void updatePosition(int lat, int lng, int id) {
+		final Map<String, String> params = new HashMap<String, String>();
+		params.put("lat", lat + "");
+		params.put("lng", lng + "");
+		params.put("id", id + "");
+
+		AsyncTask.execute(new Runnable()
+		{
+
+			@Override
+			public void run() 
+			{
+				try 
+				{
+					post(SERVER_URL + UPDATEPOS_URN, params);
+				} catch (IOException e) 
+				{
+					Log.d("ERROR", e.getMessage());
+				}
+				
+			}
+			
+		});
 	}
 	
 	private static void post(String endpoint, Map<String, String> params) throws IOException
