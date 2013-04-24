@@ -41,23 +41,26 @@ public class RegisterFragment extends Fragment implements OnClickListener
 		return view;
 	}
 
+	/**
+	 * Registrerer bruker hvis navn er satt
+	 */
 	@Override
 	public void onClick(View v) 
 	{
-		Activity activity = getActivity();
-		Configuration conf = Configuration.getCurrentConfiguration(activity);
-		String usrName = usrField.getText().toString();
+		Activity activity = getActivity();//Da vi skal bruke activity flere ganger tenker jeg det er like greit å instansiere ett objekt av det.
+		Configuration conf = Configuration.getCurrentConfiguration(activity);//Finner instillinger
+		String usrName = usrField.getText().toString(); //henter brukernavn fra tekstfeltet i appen
 		if(!usrName.equals(""))
 		{
-			conf.setUserName(usrName);
-			conf.setRegistered(true);
-			conf.commit(activity);
-			ServiceTestClass.register(activity, conf.getUserName());
-	        GTTabListener.initTabs(activity);
-			MainActivity.actionBarMenu.getItem(0).setIcon(android.R.drawable.button_onoff_indicator_on);
+			conf.setUserName(usrName);//setter brukernavnet til det som stod i tekstfeltet
+			conf.setRegistered(true);//setter at bruker er registrert
+			conf.commit(activity);//oppdaterer
+			ServiceTestClass.register(activity, conf.getUserName());//Registrerer navnet på server
+	        GTTabListener.initTabs(activity);//Registreringsfanen forsvinner. kart-fanen blir synlig
+			MainActivity.actionBarMenu.getItem(0).setIcon(android.R.drawable.button_onoff_indicator_on);//setter ikonet til menuitem til på. Mulig fordi vi gjorde den statisk i main activity
 		}else
 		{
-			Toast.makeText(activity, getResources().getString(R.string.register_fragment_name_not_set), Toast.LENGTH_SHORT).show();
+			Toast.makeText(activity, getResources().getString(R.string.register_fragment_name_not_set), Toast.LENGTH_SHORT).show(); //om navnet ikke var satt skal ikke registreringen utføres
 		}
 	}	
 }
