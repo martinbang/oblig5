@@ -33,23 +33,27 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 	private MyItemizedOverlay itemizedOverlay;
 	private LocationManager locManger;
 	private GeoPoint point;
-	private GeoPoint newPoint;
 	private MapController controller;
 	private String provider;
 	private CheckBox checkSatteliteView;
 	private CheckBox checkStreetView;
-
 	private OnClickListener checkBoxListener;
 
+	
+	
 	private boolean setZoomeEnable = true;
+	
+	 Context c;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.trackermapactivity_layout);
-		
+	
+	
 		initMap();
+		
 		
 	}// end onCreate
 
@@ -59,6 +63,10 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 		mapView.setBuiltInZoomControls(setZoomeEnable);
 
 		 locManger = (LocationManager) getSystemService(LOCATION_SERVICE);
+		 
+		 if(!locManger.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+				GPSmanager gps = new GPSmanager("GPS", "GPS not enabled, want to enable?", "Yes", "No", this);
+		 }
 
 		 Criteria criteria = new Criteria();
 
@@ -74,6 +82,7 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 		locManger.requestLocationUpdates(provider, 5000, 0, this);
 
 		initCheckBoxes();
+		 
 	}
 
 	@Override
@@ -86,15 +95,14 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 	public void onLocationChanged(Location location) {
 		// TODO Auto-generated method stub
 
+		Log.v("OnLocationChanged", "Location changed");
+		
 		double latitude = location.getLatitude();
 		double longtitude = location.getLongitude();
 
-		Toast.makeText(getApplicationContext(),
-				"Latitude: " + latitude + "Longtitude: " + longtitude,
-				Toast.LENGTH_LONG).show();
-
-		GeoPoint point = new GeoPoint((int) (latitude * 1E6),
-				(int) (longtitude * 1E6));
+		toast("Latitude: " + latitude + "Longtitude: ");
+		
+		GeoPoint point = new GeoPoint((int) (latitude * 1E6),(int) (longtitude * 1E6));
 
 		controller = mapView.getController();
 
@@ -104,32 +112,31 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 
 		List<Overlay> mapOverlays = mapView.getOverlays();
 
-		Drawable drawable = this.getResources().getDrawable(
-				R.drawable.marker_red);
+		Drawable drawable = this.getResources().getDrawable(R.drawable.marker_red);
 
 		MyItemizedOverlay miO = new MyItemizedOverlay(drawable, this);
 
-		OverlayItem currentlocation = new OverlayItem(point,
-				"Current location", "Latitude: " + latitude + ", "
-						+ "Longtitude: " + longtitude);
+		OverlayItem currentlocation = new OverlayItem(point," Current location", "Latitude: " + latitude + " , " + " Longtitude: " + longtitude);
 
 		miO.addOverlay(currentlocation);
-		// mapOverlays.clear(); //settes denne fjerner den siste markør og
-		// tegner kun corretent pos på kartet
+		Log.v("OverlayItem", " Current Location added");
+		 mapOverlays.clear(); //settes denne fjerner den siste markør og viser kun siste posisjon
 		mapOverlays.add(miO);
-
+		Log.v("OMap overlay", "Overlay added");
 	}
 
 	@Override
 	public void onProviderDisabled(String provider) {
 		// TODO Auto-generated method stub
-
+		toast("Gps disabled");
+		Log.v("GPS", "GPS IS DISABLED");
 	}
 
 	@Override
 	public void onProviderEnabled(String provider) {
 		// TODO Auto-generated method stub
-
+		toast("Gps enabled");
+		Log.v("GPS", "GPS IS ENABLED");
 	}
 
 	@Override
