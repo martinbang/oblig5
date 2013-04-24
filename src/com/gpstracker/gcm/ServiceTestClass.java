@@ -114,13 +114,12 @@ public class ServiceTestClass
 		});
 	}
 	
-	public static void sendMessage(int id, String message, String receiver, boolean isPublic)
+	public static void sendMessage(int id, String message, String receiver)
 	{
 		final Map<String, String> params = new HashMap<String, String>();
 		params.put("msg", message);
 		params.put("id", id + "");
 		params.put("rcv", receiver);
-		params.put("isPublic", isPublic + "");
 		executePost(SERVER_URL + SEND_MESSAGE_URN, params);
 	}
 	

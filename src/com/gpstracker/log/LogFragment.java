@@ -105,10 +105,6 @@ public class LogFragment extends Fragment implements OnClickListener
 		EditText message = (EditText)(view.findViewById(R.id.editText_actions_message));
 		String receiverText = receiver.getText().toString();
 		String messageText = message.getText().toString();
-		boolean isPublic = false;
-		
-		if(receiverText.equals(""))
-			isPublic = true;
 			
 		if(messageText.equals(""))
 			Toast.makeText(getActivity(), getResources().getString(R.string.log_fragment_message_not_set), Toast.LENGTH_SHORT).show();
@@ -116,7 +112,8 @@ public class LogFragment extends Fragment implements OnClickListener
 		{
 			ServiceTestClass.sendMessage(
 					Configuration.getCurrentConfiguration(getActivity()).getId(), 
-					messageText, receiverText, isPublic);
+					messageText, receiverText);
+			
 			message.setText("");
 			receiver.setText("");
 		}

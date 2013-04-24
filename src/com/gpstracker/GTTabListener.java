@@ -43,6 +43,22 @@ public class GTTabListener<T extends Fragment> implements TabListener
     	actionBar.removeAllTabs();
     	actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
     	
+    	
+    	if(!conf.getRegistered())
+    		addTab(context, actionBar, "Registrer", "registration", RegisterFragment.class);
+    	
+    	addTab(context, actionBar, "Log", "log", LogFragment.class);
+    	
+    	if(conf.getRegistered())
+    		addMapTab(context, actionBar);
+    	
+    	addTab(context, actionBar, "Instillinger", "configurations", ConfigurationFragment.class);
+    
+    	
+    }
+    
+    private static void addMapTab(final Context context, ActionBar actionBar)
+    {
     	Tab t = actionBar.newTab();
     	t.setText("Map");
     	t.setTabListener(new TabListener() 
@@ -61,15 +77,7 @@ public class GTTabListener<T extends Fragment> implements TabListener
 			@Override
 			public void onTabReselected(Tab tab, FragmentTransaction ft) {}
 		});
-    	
-    	
-    	if(!conf.getRegistered())
-    		addTab(context, actionBar, "Registrer", "registration", RegisterFragment.class);
-    	
-    	addTab(context, actionBar, "Log", "log", LogFragment.class);
-    	addTab(context, actionBar, "Instillinger", "configurations", ConfigurationFragment.class);
     	actionBar.addTab(t);
-    	
     }
     
     private static <T extends Fragment> void addTab(Context context, ActionBar actionBar, String title, String name, Class<T> c)
