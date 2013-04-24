@@ -54,7 +54,8 @@ public class RegisterFragment extends Fragment implements OnClickListener
 			conf.commit(activity);
 			ServiceTestClass.register(activity, conf.getUserName());
 	        GTTabListener.initTabs(activity);
-			MainActivity.actionBarMenu.getItem(0).setIcon(android.R.drawable.button_onoff_indicator_on);
+//			MenuItem powerbtn = (MenuItem)view.findViewById(R.id.powerService);
+//			powerbtn.setIcon(android.R.drawable.button_onoff_indicator_on);
 		}else
 		{
 			Toast.makeText(activity, getResources().getString(R.string.register_fragment_name_not_set), Toast.LENGTH_SHORT).show();

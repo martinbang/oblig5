@@ -22,7 +22,6 @@ public class MainActivity extends Activity {
 	private Button btnMap;
 	public static Activity activity;
 	public static Handler handler = new Handler();
-	public static Menu actionBarMenu;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -67,7 +66,7 @@ public class MainActivity extends Activity {
         
         //Setter ikonet til start-knappen etter om du er registrert eller ei
         MenuItem powerService = menu.getItem(0);
-        actionBarMenu = menu;
+        
         if(Configuration.getCurrentConfiguration(this).getRegistered())
         	powerService.setIcon(android.R.drawable.button_onoff_indicator_on);
         else
@@ -89,7 +88,7 @@ public class MainActivity extends Activity {
     		if(conf.getRegistered())
     		{
     			item.setIcon(android.R.drawable.button_onoff_indicator_off);
-    			ServiceTestClass.unRegister(this);
+    			ServiceTestClass.unRegister(this, conf.getUserName());
     		} else
     		{
     			item.setIcon(android.R.drawable.button_onoff_indicator_on);
@@ -100,10 +99,6 @@ public class MainActivity extends Activity {
     		
     	return super.onOptionsItemSelected(item);
     }
-    
-    
-	
-    
     
     
     
