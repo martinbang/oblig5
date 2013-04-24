@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.gpstracker.MainActivity;
 import com.gpstracker.R;
@@ -103,17 +104,21 @@ public class LogFragment extends Fragment implements OnClickListener
 		EditText receiver = (EditText)(view.findViewById(R.id.editText_actions_send));
 		EditText message = (EditText)(view.findViewById(R.id.editText_actions_message));
 		String receiverText = receiver.getText().toString();
+		String messageText = message.getText().toString();
 		boolean isPublic = false;
 		
 		if(receiverText.equals(""))
 			isPublic = true;
 			
-		ServiceTestClass.sendMessage(
-				Configuration.getCurrentConfiguration(getActivity()).getId(), 
-				message.getText().toString(), 
-				receiver.getText().toString(), isPublic);
-		
-		message.setText("");
-		receiver.setText("");
+		if(messageText.equals(""))
+			Toast.makeText(getActivity(), getResources().getString(R.string.log_fragment_message_not_set), Toast.LENGTH_SHORT).show();
+		else
+		{
+			ServiceTestClass.sendMessage(
+					Configuration.getCurrentConfiguration(getActivity()).getId(), 
+					messageText, receiverText, isPublic);
+			message.setText("");
+			receiver.setText("");
+		}
 	}
 }
