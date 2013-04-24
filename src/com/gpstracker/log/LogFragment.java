@@ -6,15 +6,20 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 
+import com.gpstracker.MainActivity;
 import com.gpstracker.R;
+import com.gpstracker.conf.Configuration;
+import com.gpstracker.gcm.ServiceTestClass;
 
-public class LogFragment extends Fragment
+public class LogFragment extends Fragment implements OnClickListener
 {
 	private static final String PREF_NAME = "preferes";
 	private static final String TYPES = "type";
@@ -23,38 +28,38 @@ public class LogFragment extends Fragment
 	private static final String COLOR = "color";
 	private static final String COUNT = "count";
 
+	private static LogArrayAdapter logArrayAdapter;
+	private static View view;
+	public static Context context;
 	public static Handler handler = new Handler();
-	public static LogArrayAdapter logArrayAdapter;
 			
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		View view = inflater.inflate(R.layout.fragment_log, container, false);
+		view = inflater.inflate(R.layout.fragment_log, container, false);
+		updateList(getActivity());
+		context = getActivity();
 		
-		Editor editor = getActivity().getSharedPreferences(PREF_NAME, 0).edit();
-		editor.clear();
-		editor.commit();
+		Button btn = (Button)view.findViewById(R.id.button_actions_send);
+		Configuration conf = Configuration.getCurrentConfiguration(getActivity());
+		if(!conf.getRegistered())
+			btn.setEnabled(false);
 		
-		LogItem[] items = getLogItems();
-		
-		logArrayAdapter = new LogArrayAdapter(getActivity(), R.layout.log_fragment_row, items);
-		ListView list = (ListView)view.findViewById(R.id.listView_actions);
-		list.setAdapter(logArrayAdapter);
+		btn.setOnClickListener(this);
 		
 		return view;
 	}
 	
-	private LogItem[] getLogItems()
+	private static LogItem[] getLogItems(Context context)
 	{
-
-		SharedPreferences sp = getActivity().getSharedPreferences(PREF_NAME, 0);
+		SharedPreferences sp = context.getSharedPreferences(PREF_NAME, 0);
 		int count = sp.getInt(COUNT, 0);
 		LogItem[] items = new LogItem[count];
 		
 		if(count == 0)
-			return new LogItem[]{new LogItem(	getResources().getString(R.string.log_default_action), 
-												getResources().getString(R.string.log_default_sender), 
-												getResources().getString(R.string.log_default_message))};
+			return new LogItem[]{new LogItem(	context.getResources().getString(R.string.log_default_action), 
+												context.getResources().getString(R.string.log_default_sender), 
+												context.getResources().getString(R.string.log_default_message))};
 		else
 			for(int i = 0; i < items.length; i++)
 				items[i] = new LogItem
@@ -67,22 +72,15 @@ public class LogFragment extends Fragment
 		return items;
 	}
 	
-//	public static void addLogItem(LogArrayAdapter adapter, Context context, LogItem item)
-//	{
-////		try
-////		{
-////			adapter = fragment.logArrayAdapter;
-////		}catch(NullPointerException e)
-////		{
-////			Log.d("NULLPOINT", "Adapter ble ikke satt, view vil ikke oppdateres");
-////		}
-////		
-//		addLogItem(context, item);
-//		
-//		adapter.notifyDataSetChanged();
-//	}
-	
-
+	public static void updateList(Context context)
+	{
+		LogItem[] items = getLogItems(context);
+		
+		logArrayAdapter = new LogArrayAdapter(context, R.layout.log_fragment_row, items);
+		ListView list = (ListView)view.findViewById(R.id.listView_actions);
+		list.setAdapter(logArrayAdapter);
+		list.setSelection(logArrayAdapter.getCount() - 1);
+	}
 	
 	public static void addLogItem(Context context, LogItem item)
 	{
@@ -96,5 +94,26 @@ public class LogFragment extends Fragment
 		edit.putInt(COLOR + count, item.color);
 		edit.putInt(COUNT, count + 1);
 		edit.commit();
+		updateList(context);
+	}
+
+	@Override
+	public void onClick(View arg0) 
+	{
+		EditText receiver = (EditText)(view.findViewById(R.id.editText_actions_send));
+		EditText message = (EditText)(view.findViewById(R.id.editText_actions_message));
+		String receiverText = receiver.getText().toString();
+		boolean isPublic = false;
+		
+		if(receiverText.equals(""))
+			isPublic = true;
+			
+		ServiceTestClass.sendMessage(
+				Configuration.getCurrentConfiguration(getActivity()).getId(), 
+				message.getText().toString(), 
+				receiver.getText().toString(), isPublic);
+		
+		message.setText("");
+		receiver.setText("");
 	}
 }

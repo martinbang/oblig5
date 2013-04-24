@@ -26,6 +26,7 @@ public class ServiceTestClass
 	public static String REGISTER_URN = "/register";
 	public static String UNREGISTER_URN = "/unregister";
 	public static String UPDATEPOS_URN = "/pos";
+	public static String SEND_MESSAGE_URN = "/send";
 	
 	public static void register(final Context context, String name)
 	{
@@ -57,12 +58,12 @@ public class ServiceTestClass
 		conf.commit(context);
 	}
 	
-	public static void unRegister(final Context context, String name)
+	public static void unRegister(final Context context)
 	{
 		final String serverUrl = SERVER_URL + UNREGISTER_URN;
 		final Map<String, String> params = new HashMap<String, String>();
-		params.put("regId", GCMRegistrar.getRegistrationId(context));
-		params.put("name", name);
+		//params.put("regId", GCMRegistrar.getRegistrationId(context));
+		params.put("id", Configuration.getCurrentConfiguration(context).getId() + "");
 		
 		AsyncTask.execute(new Runnable()
 		{
@@ -88,7 +89,9 @@ public class ServiceTestClass
 		conf.commit(context);
 	}
 	
-	public static void updatePosition(double lat, double lng, Context context) {
+	public static void updatePosition(double lat, double lng, Context context) 
+	{
+
 		final Map<String, String> params = new HashMap<String, String>();
 		params.put("lat", lat + "");
 		params.put("lng", lng + "");
@@ -107,9 +110,36 @@ public class ServiceTestClass
 				{
 					Log.d("ERROR", e.getMessage());
 				}
-				
 			}
-			
+		});
+	}
+	
+	public static void sendMessage(int id, String message, String receiver, boolean isPublic)
+	{
+		final Map<String, String> params = new HashMap<String, String>();
+		params.put("msg", message);
+		params.put("id", id + "");
+		params.put("rcv", receiver);
+		params.put("isPublic", isPublic + "");
+		executePost(SERVER_URL + SEND_MESSAGE_URN, params);
+	}
+	
+	private static void executePost(final String endpoint, final Map<String, String> params)
+	{
+		AsyncTask.execute(new Runnable()
+		{
+
+			@Override
+			public void run() 
+			{
+				try 
+				{
+					post(endpoint, params);
+				} catch (IOException e) 
+				{
+					Log.d("ERROR", e.getMessage());
+				}
+			}
 		});
 	}
 	
