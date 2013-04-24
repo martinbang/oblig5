@@ -12,4 +12,6 @@
 	<string name="log_default_action">Message</string>
 	<string name="log_default_sender">Gpstracker</string>
 	<string name="log_default_message">No recordings have been made</string>
+	<string name="log_fragment_title_receiver">Receiver:</string>
+	<string name="log_fragment_title_button_send">submit</string>
 </resources>
