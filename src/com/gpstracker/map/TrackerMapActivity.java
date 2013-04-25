@@ -29,20 +29,16 @@ import com.gpstracker.gcm.ServiceTestClass;
 public class TrackerMapActivity extends MapActivity implements LocationListener {
 
 	public static MapView mapView;
-	private View view;
-	private MyItemizedOverlay itemizedOverlay;
 	private LocationManager locManger;
-	private GeoPoint point;
 	private MapController controller;
-	private MapController cc;
 	private String provider;
 	private CheckBox checkSatteliteView;
 	private CheckBox checkStreetView;
 	private OnClickListener checkBoxListener;
 	
-	private int updateMapMillisec = 5000;
+	private int updateMapMillisec = 1000;
 	private int updateMapMeters = 0;
-	private int setZoomLvl = 8;
+	private int setZoomLvl = 12;
 	
 	//Shared pref settings
 	public static final String SHARDE_PREFERENCES_NAME = "com.gps.location";
@@ -54,7 +50,6 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 	
 	private Map<Integer, Overlay> overlayMap = new HashMap<Integer, Overlay>();
 	
-	private String FILENAME = "location";
 	Context c;
 
 	@Override
@@ -115,37 +110,14 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 
 	@Override
 	public void onLocationChanged(Location location) {
-		// TODO Auto-generated method stub
-
 		Log.v("OnLocationChanged", "Location changed");
 		
 		/**Henter lengde og breddegrad*/
 		double latitude = location.getLatitude();
 		double longtitude = location.getLongitude();
 		
-		/**lagrer posisjonene i Shared preferenses(Lagrer siste posisjon)*/
-		try {
-
-			/*SharedPreferences prefs = getApplicationContext()
-					.getSharedPreferences("TEST",
-							Context.MODE_WORLD_READABLE);
-			//Editor editor = prefs.edit();
-			//editor.putLong(LATITUDE, Double.doubleToLongBits(latitude));
-			//editor.putLong(LONGTITUDE, Double.doubleToLongBits(longtitude));
-			//editor.commit();
-			
-			double l = Double.longBitsToDouble(prefs.getLong(LATITUDE, 0));
-			double ll = Double.longBitsToDouble(prefs.getLong(LONGTITUDE, 0));
-			String s = Double.toString(l);
-			String d = Double.toString(ll);
-			toast(s + d);*/
-			
-			
-				
-			//mapOverlays.clear(); //settes denne fjerner den siste markør og viser kun siste posisjon
-			
-			try{
-				
+		try {			
+			try{				
 				ServiceTestClass.updatePosition(latitude, longtitude, this);
 				Log.v("Updatepositions", "Posisions sendt");
 				
@@ -158,55 +130,17 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 			Log.v("Shared_PREFERNCE_ERROR", e.getMessage());
 		}
 		
-		toast("Lat: " + latitude + " Lon: " + longtitude);
-		
-		/*SharedPreferences prefs = getApplicationContext()
-				.getSharedPreferences("TEST",
-						Context.MODE_APPEND);*/
-		
-		//double l = Double.longBitsToDouble(prefs.getLong(LATITUDE, 0));
-		//double ll = Double.longBitsToDouble(prefs.getLong(LONGTITUDE, 0));
-		
-		//String s = Double.toString(l);
-		//String d = Double.toString(ll);
-		//toast(s + d);
-		
-		//GeoPoint point = new GeoPoint((int) (longtitude* 1E6),(int) (latitude * 1E6));
-		//GeoPoint p = new GeoPoint((int) (l* 1E6),(int) (ll * 1E6));
-		//saveLocation((int)latitude, (int)longtitude);
-		
-		//controller.animateTo(point);
-		//controller.animateTo(p);
-		mapView.invalidate();
-		
+		mapView.invalidate();		
 		updateOverlay(latitude, longtitude, -666);
-
-		/*List<Overlay> mapOverlays = mapView.getOverlays();
-		Drawable drawable = this.getResources().getDrawable(R.drawable.marker_red);
 		
-		MyItemizedOverlay miO = new MyItemizedOverlay(drawable, this);
-		//MyItemizedOverlay iOverlay = new MyItemizedOverlay(drawable, this);
-		
-		OverlayItem currentlocation = new OverlayItem(point," Current location", "Lat: " + latitude + " , " + " Long: " + longtitude);
-		//OverlayItem over = new OverlayItem(p, "hei","håhå");
-		
-		miO.addOverlay(currentlocation);
-		//miO.addOverlay(over);
-		Log.v("OverlayItem", " Current Location added");
-			
-		mapOverlays.clear(); //settes denne fjerner den siste markør og viser kun siste posisjon
-		mapOverlays.add(miO);
-		//mapOverlays.add(iOverlay);*/
-		
-		Log.v("OMap overlay", "Overlay added");
-		
+		Log.v("OMap overlay", "Overlay added");		
 	}
 	
 	private Overlay buildOverlay(double lat, double lng) {
 		Drawable drawable = this.getResources().getDrawable(R.drawable.marker_red);
 		
 		MyItemizedOverlay miO = new MyItemizedOverlay(drawable, this);
-		GeoPoint point = new GeoPoint((int) (lng * 1E6),(int) (lat * 1E6));
+		GeoPoint point = new GeoPoint((int) (lat * 1E6),(int) (lng * 1E6));
 		OverlayItem currentlocation = new OverlayItem(point," Current location", "Lat: " + lat + " , " + " Long: " + lng);
 		
 		miO.addOverlay(currentlocation);
@@ -298,8 +232,4 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 		super.onDestroy();
 		locManger.removeUpdates(this);
 	}
-
-	
-	
-	
 }// end Activity
