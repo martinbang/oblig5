@@ -23,6 +23,12 @@ public class GTTabListener<T extends Fragment> implements TabListener
 	private String tag;
 	private Class<T> fragmentClass;
 	
+	/**
+	 * Konstruktør 
+	 * @param context
+	 * @param tag
+	 * @param cls
+	 */
 	public GTTabListener(Context context, String tag, Class<T> cls)
 	{
 		this.context = context;

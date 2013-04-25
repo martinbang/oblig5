@@ -35,9 +35,6 @@ public class MainActivity extends Activity {
         activity = this;
         
         GTTabListener.initTabs(this);
-        
-        //kun for testing
-        //TestButtonForMap();
     }
     
     /**
@@ -103,30 +100,5 @@ public class MainActivity extends Activity {
     		
     	return super.onOptionsItemSelected(item);
     }
-    
-    
-	
-    
-    
-    
-    
-
-    /**
-     * Kun For testing mot google map greia
-     */
-    public void TestButtonForMap(){
-    	
-    	//btnMap = (Button) findViewById(R.id.buttonMap);
-    	btnMap.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Intent i = new Intent(MainActivity.this,TrackerMapActivity.class);
-		        startActivity(i);
-			}
-		});
-    	
-    }//end method
-    
+   
 }//end activity

@@ -38,6 +38,9 @@ public class Configuration
 	private boolean isRegistered;
 	private int id;
 	
+	/**
+	 * Setter alle parametre til defaultverdiene
+	 */
 	private Configuration()
 	{
 		this.username = DEFAULT_USER_NAME;
@@ -50,6 +53,10 @@ public class Configuration
 		this.id = DEFAULT_ID;
 	}
 	
+	/**
+	 * Bruker verdiene som er satt til nå til å lage en string som representerer Configurasjons-objektet
+	 * @return
+	 */
 	private String getConfigurationString()
 	{
 		String[] confParameters = new String[AVAILABLE_CONFIGURATIONS];
