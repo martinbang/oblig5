@@ -8,13 +8,13 @@
         android:id="@+id/switch_send_on_time_passed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Send posisjonsdata etter n minutter" />
+        android:text="@string/configuration_fragment_title_send_location_on_time_change" />
 
     <TextView
         android:id="@+id/textView_minutes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Minutter"
+        android:text="@string/configuration_fragment_title_minutes"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <EditText
@@ -24,20 +24,21 @@
         android:ems="10"
         android:inputType="number" >
 
-        <requestFocus />
+        <requestFocus android:layout_width="wrap_content" />
+
     </EditText>
 
     <Switch
         android:id="@+id/switch_send_on_location_changed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Send posisjonsdata etter forflyttet n meter" />
+        android:text="@string/configuration_fragment_title_send_location_on_location_change" />
 
     <TextView
         android:id="@+id/textView_meters"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Meter"
+        android:text="@string/configuration_fragment_title_meters"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <EditText
@@ -47,6 +48,19 @@
         android:ems="10"
         android:inputType="number" />
 
+    <TextView 
+        android:id="@+id/textView_configuration_zoom_level"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/configuration_fragment_zoom_level"/>
     
-
+    <EditText
+        android:id="@+id/editText_configuration_zoom_level"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_heigth="wrap_content"
+        android:ems="10"
+        android:inputType="number" />
+    
 </LinearLayout>

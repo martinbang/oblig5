@@ -15,4 +15,10 @@
 	<string name="log_default_message">No recordings have been made</string>
 	<string name="log_fragment_title_receiver">Receiver:</string>
 	<string name="log_fragment_title_button_send">submit</string>
+	<string name="configuration_fragment_title_send_location_on_time_change">Send location after n minutes</string>
+	<string name="configuration_fragment_title_minutes">Minutes</string>
+	<string name="configuration_fragment_title_send_location_on_location_change">Send location after passed n meters</string>
+	<string name="configuration_fragment_title_meters">Meters</string>
+	<string name="configuration_fragment_zoom_level">Zoom level</string>
+	
 </resources>

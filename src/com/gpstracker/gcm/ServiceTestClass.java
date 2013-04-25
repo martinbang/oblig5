@@ -19,9 +19,6 @@ import com.gpstracker.conf.Configuration;
 
 public class ServiceTestClass 
 {
-	public static final long BACKOFF_MILLI_SECOUNDS = 2000;
-	public static final int MAX_ATTEMPTS = 5;
-	
 	public static String SERVER_URL = "http://kenh.dyndns.org/android5/tomcat";
 	public static String REGISTER_URN = "/register";
 	public static String UNREGISTER_URN = "/unregister";
@@ -35,20 +32,7 @@ public class ServiceTestClass
 		params.put("regId", GCMRegistrar.getRegistrationId(context));
 		params.put("name", name);
 		
-		AsyncTask.execute(new Runnable()
-		{
-			@Override
-			public void run() 
-			{
-				try 
-				{
-					post(serverUrl, params);
-				} catch (IOException e) 
-				{
-					Log.d("ERROR", e.getMessage());
-				}
-			}
-		});
+		executePost(serverUrl, params);
 			
 		GCMRegistrar.setRegisteredOnServer(context,  true);
 		
@@ -65,23 +49,7 @@ public class ServiceTestClass
 		//params.put("regId", GCMRegistrar.getRegistrationId(context));
 		params.put("id", Configuration.getCurrentConfiguration(context).getId() + "");
 		
-		AsyncTask.execute(new Runnable()
-		{
-
-			@Override
-			public void run() 
-			{
-				try 
-				{
-					post(serverUrl, params);
-				} catch (IOException e) 
-				{
-					Log.d("ERROR", e.getMessage());
-				}
-				
-			}
-			
-		});
+		executePost(serverUrl, params);
 		
 		GCMRegistrar.setRegisteredOnServer(context, false);
 		Configuration conf = Configuration.getCurrentConfiguration(context);
@@ -96,22 +64,8 @@ public class ServiceTestClass
 		params.put("lat", lat + "");
 		params.put("lng", lng + "");
 		params.put("id", Configuration.getCurrentConfiguration(context).getId() + "");
+		executePost(SERVER_URL + UPDATEPOS_URN, params);
 
-		AsyncTask.execute(new Runnable()
-		{
-
-			@Override
-			public void run() 
-			{
-				try 
-				{
-					post(SERVER_URL + UPDATEPOS_URN, params);
-				} catch (IOException e) 
-				{
-					Log.d("ERROR", e.getMessage());
-				}
-			}
-		});
 	}
 	
 	public static void sendMessage(int id, String message, String receiver)
@@ -142,6 +96,12 @@ public class ServiceTestClass
 		});
 	}
 	
+	/**
+	 * Sender post forespørsel med parametre
+	 * @param endpoint URI
+	 * @param params
+	 * @throws IOException
+	 */
 	private static void post(String endpoint, Map<String, String> params) throws IOException
 	{
 		Log.d("POST", "STARTER POST. id: " + params.get("regId"));
@@ -154,49 +114,48 @@ public class ServiceTestClass
 			Log.d("POST", "MALFORMED URL");
 		}
 		
-		StringBuilder bodyBuilder = new StringBuilder();
+		StringBuilder bodyBuilder = new StringBuilder(); //For å lage parameterstring
 		Iterator<Entry<String, String>> iterator = params.entrySet().iterator();
 		
+		
+		//Legger til parameter og parameternavn for hver parameter som ble lagdt til 
 		while(iterator.hasNext())
 		{
 			Entry<String, String> param = iterator.next();
-			bodyBuilder.append(param.getKey()).append('=').append(param.getValue());
+			bodyBuilder.append(param.getKey()).append('=').append(param.getValue());//parameternavn og parameter skilles med =
 			if(iterator.hasNext())
 			{
-				bodyBuilder.append('&');
+				bodyBuilder.append('&'); //parametre i uri skilles med &
 			}
 		}
 		
 		String body = bodyBuilder.toString();
-		byte[] bytes = body.getBytes();
+		byte[] bytes = body.getBytes(); //tillegg blir serializert
 		HttpURLConnection conn = null;
-		//Log.d("POST", "PRØVER Å SENDE POST");
+
 		try
 		{	
 			conn = (HttpURLConnection) url.openConnection();
-			//Log.d("POST", "openConnection");
 			conn.setDoOutput(true);
 			conn.setUseCaches(false);
 			conn.setFixedLengthStreamingMode(bytes.length);
 			conn.setRequestMethod("POST");
 			conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
-			//Log.d("POST", "Conn parametre satt");
 			
 			OutputStream out = conn.getOutputStream();
 			out.write(bytes);
 			out.close();
-			//Log.d("POST", "connection gjort");
 			
 			int status = conn.getResponseCode();
 			if(status != 200)
 			{
 				throw new IOException("Post failed with error code " + status);
 			}
-		} 
+		}
 		catch(Exception e)
 		{
 			if(e.getMessage() != null)
-				Log.d("POST", e.getMessage());
+				Log.d("POST", "post ble ikke sendt! melding: " + e.getMessage());
 			else Log.d("POST", e.toString());
 		}
 		finally

@@ -2,18 +2,15 @@ package com.gpstracker.conf;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
 
 import com.gpstracker.R;
-import com.gpstracker.map.TrackerMapActivity;
+
 
 public class ConfigurationFragment extends Fragment
 {
@@ -28,22 +25,29 @@ public class ConfigurationFragment extends Fragment
 		return view;
 	}
 	
+	/**
+	 * Verdiene på widgetene i fragmentet blif satt slik at
+	 * de representerer konfigurasjonen som er satt til nå
+	 */
 	private void setCurrentConfigurations()
 	{
+		//Henter ut widgetene
 		EditText meters = (EditText)view.findViewById(R.id.editText_meters);
 		Switch onLocationChange = (Switch)view.findViewById(R.id.switch_send_on_location_changed);
 		EditText minutes = (EditText)view.findViewById(R.id.editText_minutes);
 		Switch onMinutesPassed = (Switch)view.findViewById(R.id.switch_send_on_time_passed);
 		
+		//Legger til widgetChangeListener
 		Activity activity = getActivity();
 		meters.addTextChangedListener(new WidgetChangeListener(meters, activity));
 		minutes.addTextChangedListener(new WidgetChangeListener(minutes, activity));
 		onLocationChange.setOnCheckedChangeListener(new WidgetChangeListener(view, activity));
 		onMinutesPassed.setOnCheckedChangeListener(new WidgetChangeListener(view, activity));
 		
-		
+		//Henter konfigurasjonene fra shared preferences
 		Configuration conf = Configuration.getCurrentConfiguration(getActivity());
 		
+		//Setter verdier på widgetene
 		meters.setText(conf.getMetersBetweenSend() + "");
 		boolean onLocationChanged = conf.getSendOnUserMoved();
 		onLocationChange.setChecked(onLocationChanged);
@@ -54,10 +58,6 @@ public class ConfigurationFragment extends Fragment
 		onMinutesPassed.setChecked(onTimePassed);
 		minutes.setEnabled(onTimePassed);
 		
-		
-		
-			
-			
 	}
 
 }

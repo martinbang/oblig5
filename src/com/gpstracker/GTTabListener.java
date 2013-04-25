@@ -41,7 +41,7 @@ public class GTTabListener<T extends Fragment> implements TabListener
 		initTabs(activity, activity.getActionBar());
 	}
 	
-    public static void initTabs(final Context context, ActionBar actionBar)
+    public static void initTabs(final Context context, ActionBar actionBar) throws IllegalStateException
     {
     	Configuration conf = Configuration.getCurrentConfiguration(context);
     	

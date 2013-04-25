@@ -43,6 +43,9 @@ public class WidgetChangeListener implements TextWatcher, OnCheckedChangeListene
 		
 	}
 
+	/**
+	 * Når tekst på et av feltene blir endret, lagres det i konfigurasjon
+	 */
 	@Override
 	public void onTextChanged(CharSequence s, int start, int before, int count) 
 	{
@@ -68,6 +71,9 @@ public class WidgetChangeListener implements TextWatcher, OnCheckedChangeListene
 		
 	}
 
+	/**
+	 * Når en Switch forandres i viewet settes konfigurasjonparameteren den representerer til Switchens verdi.
+	 */
 	@Override
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) 
 	{
@@ -89,7 +95,7 @@ public class WidgetChangeListener implements TextWatcher, OnCheckedChangeListene
 		}
 		
 		if(et != null)
-			et.setEnabled(isChecked);
+			et.setEnabled(isChecked); //Felt som bestemmer meter eller miutt skal ikke være tilgjengelig switches verdi er false.
 		conf.commit(context);
 	}
 }

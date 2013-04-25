@@ -59,15 +59,14 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 	Context c;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) 
+	{
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.trackermapactivity_layout);
 	
 		//Legger til kart i onCreate:
 		initMap();
-		
-		
 	}// end onCreate
 	
 	/**
