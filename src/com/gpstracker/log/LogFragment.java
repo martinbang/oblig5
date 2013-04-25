@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -85,17 +86,23 @@ public class LogFragment extends Fragment implements OnClickListener
 	
 	public static void addLogItem(Context context, LogItem item)
 	{
-		SharedPreferences sp = context.getSharedPreferences(PREF_NAME, 0);
-		Editor edit = sp.edit();
-		int count = sp.getInt(COUNT, 0);
-		
-		edit.putString(TYPES + count, item.action);
-		edit.putString(SENDERS + count, item.sender);
-		edit.putString(MESSAGES + count, item.message);
-		edit.putInt(COLOR + count, item.color);
-		edit.putInt(COUNT, count + 1);
-		edit.commit();
-		updateList(context);
+		try
+		{
+			SharedPreferences sp = context.getSharedPreferences(PREF_NAME, 0);
+			Editor edit = sp.edit();
+			int count = sp.getInt(COUNT, 0);
+			
+			edit.putString(TYPES + count, item.action);
+			edit.putString(SENDERS + count, item.sender);
+			edit.putString(MESSAGES + count, item.message);
+			edit.putInt(COLOR + count, item.color);
+			edit.putInt(COUNT, count + 1);
+			edit.commit();
+			updateList(context);
+		} catch (NullPointerException e)
+		{
+			Log.e("LogFragment.addLogItem", "Nullref");
+		}
 	}
 
 	@Override

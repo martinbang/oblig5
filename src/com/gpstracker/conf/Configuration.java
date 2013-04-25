@@ -76,6 +76,11 @@ public class Configuration
 		return confString;
 	}
 	
+	/**
+	 * Gjør om en konfigurasjonstring til et konfigurasjons objekt
+	 * @param confString getConfigurationString()
+	 * @return
+	 */
 	private static Configuration getConfigurationFromString(String confString)
 	{
 		String[] confParameters = confString.split(PARAMETER_SEPARATOR);
@@ -93,6 +98,13 @@ public class Configuration
 		return conf;
 	}
 	
+	/**
+	 * Returnerer et konfigurasjons objekt med parametrene som er lagret i SharedPreferences
+	 * Hvis det ikke er lagret noe der, blir det returnert et konfigurasjons objekt
+	 * med default verdiene
+	 * @param context
+	 * @return
+	 */
 	public static Configuration getCurrentConfiguration(Context context)
 	{
 		SharedPreferences sp = context.getSharedPreferences(PREF_NAME, 0);
@@ -103,13 +115,21 @@ public class Configuration
 		else return getConfigurationFromString(confString);
 	}
 	
+	/**
+	 * lagrer verdiene som er satt i shared preferences
+	 * @param context
+	 */
 	public void commit(Context context)
 	{
 		Editor editor = context.getSharedPreferences(PREF_NAME, 0).edit();
-		String confString = getConfigurationString();
+		String confString = getConfigurationString();//Henter konfigurasjonstring med verdiene som er satt til nå
 		editor.putString(CONF_NAME, confString);
-		editor.commit();
+		editor.commit();//Lagrer
 	}
+	
+	/*
+	 * accsessors & mutators
+	 */
 	
 	public void setUserName(String userName){this.username = userName;}
 	public void setSendOnTimePassed(boolean sendOnTimePassed){this.sendLocationOnTimePassed = sendOnTimePassed;}

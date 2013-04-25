@@ -127,20 +127,23 @@ public class GCMIntentService extends GCMBaseIntentService
 			String color = extras.getString(TAG_COLOR);//Fargekoden til avsender
 
 			final LogItem item = new LogItem(action, sender, msg, color);//Oppretter ett loggbart item
-			Log.d("MESSAGE", "melding: " + msg + " type: " + action + " sender: " + sender + " farge: " + color);
-			
-			/*
-			 * Legger til ved å bruke Logfragmentets handler.
-			 */
-			LogFragment.handler.post(new Runnable()
-			{
-				@Override
-				public void run() 
+			if(!action.equals("null"))
 				{
-					Log.d("HANDLER", "run metoden kjører ");
-					LogFragment.addLogItem(LogFragment.context, item);
-				}
-			});
+				Log.d("MESSAGE", "melding: " + msg + " type: " + action + " sender: " + sender + " farge: " + color);
+				
+				/*
+				 * Legger til ved å bruke Logfragmentets handler.
+				 */
+				LogFragment.handler.post(new Runnable()
+				{
+					@Override
+					public void run() 
+					{
+						Log.d("HANDLER", "run metoden kjører ");
+						LogFragment.addLogItem(LogFragment.context, item);
+					}
+				});
+			}
 			
 		} catch(NullPointerException e){}//Om det skjer en 
 	}
