@@ -52,6 +52,7 @@ public class AnimationSplash extends ImageView{
 
 	/** (non-Javadoc)
 	 * @see android.widget.ImageView#onDraw(android.graphics.Canvas)
+	 * Android Canvas drawing
 	 */
 	@Override
 	protected void onDraw(Canvas canvas) {

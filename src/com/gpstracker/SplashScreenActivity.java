@@ -8,9 +8,15 @@ import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
+/**
+ * Klassen brukes for å vise animasjoner og kjører animasjonen i en egen tråd.
+ *Klassen kan kjøre flere animasjoner om ønsket.
+ */
 public class SplashScreenActivity extends Activity {
 	
+	//tag for LOG, brukes for å sjekke at ting kjører
 	private static String TAG = SplashScreenActivity.class.getName();
+	//sleep timer er  tiden tråden "sover", får den kjører en intent å skifter aktivitet
 	private static long SLEEP = 3500;
 	
 	/** (non-Javadoc)
@@ -33,7 +39,7 @@ public class SplashScreenActivity extends Activity {
 	}//end
 	
 	/**
-	 * Inner klass som brukes for å kjøre hele splash screenen i en tråd
+	 * Inner klass for kjøring av splash i egen tråd
 	 * @author Martin
 	 *
 	 */
@@ -52,8 +58,5 @@ public class SplashScreenActivity extends Activity {
 			SplashScreenActivity.this.startActivity(intent);
 			SplashScreenActivity.this.finish();
 		}//end run
-	}//end class
-	
-		
-	
+	}//inner class
 }//end class
