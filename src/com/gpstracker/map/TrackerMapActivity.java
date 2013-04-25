@@ -1,21 +1,16 @@
 package com.gpstracker.map;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import android.app.Service;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.graphics.drawable.Drawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.test.ServiceTestCase;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,7 +23,6 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
-import com.gpstracker.GCMIntentService;
 import com.gpstracker.R;
 import com.gpstracker.gcm.ServiceTestClass;
 
@@ -48,7 +42,7 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 	
 	private int updateMapMillisec = 5000;
 	private int updateMapMeters = 0;
-	private int setZoomLvl = 1;
+	private int setZoomLvl = 8;
 	
 	//Shared pref settings
 	public static final String SHARDE_PREFERENCES_NAME = "com.gps.location";
@@ -57,6 +51,8 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 	public static final String COLOR = "color";
 
 	private boolean setZoomeEnable = true;
+	
+	private Map<Integer, Overlay> overlayMap = new HashMap<Integer, Overlay>();
 	
 	private String FILENAME = "location";
 	Context c;
@@ -70,12 +66,6 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 	
 		//Legger til kart i onCreate:
 		initMap();
-<<<<<<< HEAD
-	
-		
-		
-=======
->>>>>>> 3562b88054db4fbc4cfbb8b438afd2c678726bbc
 	}// end onCreate
 	
 	/**
@@ -85,6 +75,8 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 		
 		 mapView = (MapView) findViewById(R.id.map_view);
 		 mapView.setBuiltInZoomControls(setZoomeEnable);
+		 controller = mapView.getController();
+		 controller.setZoom(setZoomLvl);
 
 		 locManger = (LocationManager) getSystemService(LOCATION_SERVICE);
 		 
@@ -103,11 +95,18 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 		}
 
 		locManger.requestLocationUpdates(provider, updateMapMillisec, updateMapMeters, this);
+		ServiceTestClass.addPositionListener(new PositionListener() {
+			@Override
+			public void positionUpdate(double lat, double lng, int id) {
+				updateOverlay(lat, lng, id);
+			}
+		});
 
 		initCheckBoxes();
 		 
 	}//end initMap()
 
+	
 	@Override
 	protected boolean isRouteDisplayed() {
 		// TODO Auto-generated method stub
@@ -161,47 +160,70 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 		
 		toast("Lat: " + latitude + " Lon: " + longtitude);
 		
-		SharedPreferences prefs = getApplicationContext()
+		/*SharedPreferences prefs = getApplicationContext()
 				.getSharedPreferences("TEST",
-						Context.MODE_APPEND);
+						Context.MODE_APPEND);*/
 		
-		double l = Double.longBitsToDouble(prefs.getLong(LATITUDE, 0));
-		double ll = Double.longBitsToDouble(prefs.getLong(LONGTITUDE, 0));
+		//double l = Double.longBitsToDouble(prefs.getLong(LATITUDE, 0));
+		//double ll = Double.longBitsToDouble(prefs.getLong(LONGTITUDE, 0));
 		
-		String s = Double.toString(l);
-		String d = Double.toString(ll);
-		toast(s + d);
+		//String s = Double.toString(l);
+		//String d = Double.toString(ll);
+		//toast(s + d);
 		
 		GeoPoint point = new GeoPoint((int) (longtitude* 1E6),(int) (latitude * 1E6));
-		GeoPoint p = new GeoPoint((int) (l* 1E6),(int) (ll * 1E6));
+		//GeoPoint p = new GeoPoint((int) (l* 1E6),(int) (ll * 1E6));
 		//saveLocation((int)latitude, (int)longtitude);
-		controller = mapView.getController();
-		controller.animateTo(point);
-		controller.animateTo(p);
-		controller.setZoom(setZoomLvl);
+		
+		//controller.animateTo(point);
+		//controller.animateTo(p);
 		mapView.invalidate();
+		
+		updateOverlay(latitude, longtitude, -666);
 
-		List<Overlay> mapOverlays = mapView.getOverlays();
+		/*List<Overlay> mapOverlays = mapView.getOverlays();
 		Drawable drawable = this.getResources().getDrawable(R.drawable.marker_red);
 		
 		MyItemizedOverlay miO = new MyItemizedOverlay(drawable, this);
-		MyItemizedOverlay iOverlay = new MyItemizedOverlay(drawable, this);
+		//MyItemizedOverlay iOverlay = new MyItemizedOverlay(drawable, this);
 		
 		OverlayItem currentlocation = new OverlayItem(point," Current location", "Lat: " + latitude + " , " + " Long: " + longtitude);
-		OverlayItem over = new OverlayItem(p, "hei","håhå");
+		//OverlayItem over = new OverlayItem(p, "hei","håhå");
 		
 		miO.addOverlay(currentlocation);
-		miO.addOverlay(over);
+		//miO.addOverlay(over);
 		Log.v("OverlayItem", " Current Location added");
 			
 		mapOverlays.clear(); //settes denne fjerner den siste markør og viser kun siste posisjon
 		mapOverlays.add(miO);
-		mapOverlays.add(iOverlay);
+		//mapOverlays.add(iOverlay);*/
 		
 		Log.v("OMap overlay", "Overlay added");
 		
 	}
+	
+	private Overlay buildOverlay(double lat, double lng) {
+		Drawable drawable = this.getResources().getDrawable(R.drawable.marker_red);
+		
+		MyItemizedOverlay miO = new MyItemizedOverlay(drawable, this);
+		GeoPoint point = new GeoPoint((int) (lng * 1E6),(int) (lat * 1E6));
+		OverlayItem currentlocation = new OverlayItem(point," Current location", "Lat: " + lat + " , " + " Long: " + lng);
+		
+		miO.addOverlay(currentlocation);
+		return miO;
+	}
 
+	private void updateOverlay(double lat, double lng, int id) {
+		List<Overlay> mapOverlays = mapView.getOverlays();
+		if (overlayMap.containsKey(id)) {
+			mapOverlays.remove(overlayMap.get(id));
+		}
+		
+		Overlay overlay = buildOverlay(lat, lng);
+		overlayMap.put(id, overlay);
+		mapOverlays.add(overlay);
+	}
+	
 	@Override
 	public void onProviderDisabled(String provider) {
 		// TODO Auto-generated method stub
