@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gcm.GCMBaseIntentService;
 import com.google.android.maps.MyLocationOverlay;
@@ -75,13 +76,13 @@ public class GCMIntentService extends GCMBaseIntentService
 			
 			Log.d("POS", "Ny posisjon id:" + id + " lat: " + latitude + "lng: " + longtitude + " color: " + colorStr);
 			
-			SharedPreferences prefs = getApplicationContext()
+			/*SharedPreferences prefs = getApplicationContext()
 					.getSharedPreferences("TEST",
 							Context.MODE_APPEND);
 			Editor editor = prefs.edit();
 			editor.putLong("latitude", Double.doubleToLongBits(latitude));
 			editor.putLong("longtitude", Double.doubleToLongBits(longtitude));
-			editor.commit();
+			editor.commit();*/
 			
 		} 
 		catch(NumberFormatException e){Log.d("POS", e.getMessage());}

@@ -146,7 +146,7 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 			
 			try{
 				
-				ServiceTestClass.updatePosition(longtitude, latitude, this);
+				ServiceTestClass.updatePosition(latitude, longtitude, this);
 				Log.v("Updatepositions", "Posisions sendt");
 				
 			}catch(Exception e){
@@ -171,7 +171,7 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 		//String d = Double.toString(ll);
 		//toast(s + d);
 		
-		GeoPoint point = new GeoPoint((int) (longtitude* 1E6),(int) (latitude * 1E6));
+		//GeoPoint point = new GeoPoint((int) (longtitude* 1E6),(int) (latitude * 1E6));
 		//GeoPoint p = new GeoPoint((int) (l* 1E6),(int) (ll * 1E6));
 		//saveLocation((int)latitude, (int)longtitude);
 		
