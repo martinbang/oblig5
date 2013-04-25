@@ -2,18 +2,26 @@ package com.gpstracker;
 
 import java.text.NumberFormat;
 
+import junit.framework.Test;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.google.android.gcm.GCMBaseIntentService;
+import com.google.android.maps.MyLocationOverlay;
 import com.gpstracker.conf.Configuration;
 import com.gpstracker.gcm.ServiceTestClass;
 import com.gpstracker.log.LogFragment;
 import com.gpstracker.log.LogItem;
+import com.gpstracker.map.MyItemizedOverlay;
+import com.gpstracker.map.TrackerMapActivity;
 
 public class GCMIntentService extends GCMBaseIntentService
 {
@@ -64,6 +72,15 @@ public class GCMIntentService extends GCMBaseIntentService
 			int color = LogItem.parseColorString(colorStr); //Dette blir gjort om til int-verdi som android forstår
 			
 			Log.d("POS", "Ny posisjon id:" + id + " lat: " + latitude + "lng: " + longtitude + " color: " + colorStr);
+			
+			SharedPreferences prefs = getApplicationContext()
+					.getSharedPreferences("TEST",
+							Context.MODE_APPEND);
+			Editor editor = prefs.edit();
+			editor.putLong("latitude", Double.doubleToLongBits(latitude));
+			editor.putLong("longtitude", Double.doubleToLongBits(longtitude));
+			editor.commit();
+			
 		} 
 		catch(NumberFormatException e){Log.d("POS", e.getMessage());}
 		catch(NullPointerException ne){Log.d("POS", "Nullpointer");}

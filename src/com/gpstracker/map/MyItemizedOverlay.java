@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
+import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
@@ -27,6 +28,17 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 		mOverlays.add(overlay);
 		populate();
 	}
+	
+	public void add(int lat, int lon){
+		GeoPoint gp = new GeoPoint(lat, lon);
+		OverlayItem oi = new OverlayItem(gp, "pos", null);
+		addOverlay(oi);
+	}
+	
+//	public void setAllUserPos(Context context, double lon, double lat, int color, int id){
+		
+		
+//	}
 
 	public void clear() {
 
