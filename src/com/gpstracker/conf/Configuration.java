@@ -1,5 +1,7 @@
 package com.gpstracker.conf;
 
+import com.gpstracker.map.TrackerMapActivity;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -130,7 +132,7 @@ public class Configuration
 	/*
 	 * accsessors & mutators
 	 */
-	
+	TrackerMapActivity a;
 	public void setUserName(String userName){this.username = userName;}
 	public void setSendOnTimePassed(boolean sendOnTimePassed){this.sendLocationOnTimePassed = sendOnTimePassed;}
 	public void setSendOnUserMoved(boolean sendOnUserMoved){this.sendLocationOnUserMoved = sendOnUserMoved;}

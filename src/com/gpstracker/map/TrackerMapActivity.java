@@ -43,7 +43,7 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 	
 	private int updateMapMillisec = 1000;
 	private int updateMapMeters = 0;
-	private int setZoomLvl = 12;
+	private static int setZoomLvl;
 	
 	//Shared pref settings
 	public static final String SHARDE_PREFERENCES_NAME = "com.gps.location";
@@ -57,6 +57,8 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 	
 	View view;
 	Context c;
+	
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -78,7 +80,7 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 		 mapView.setBuiltInZoomControls(setZoomeEnable);
 		 mapView.setStreetView(true);
 		 controller = mapView.getController();
-		 controller.setZoom(setZoomLvl);
+		 controller.setZoom(getSetZoomLvl());
 
 		 locManger = (LocationManager) getSystemService(LOCATION_SERVICE);
 		 
@@ -248,4 +250,20 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 		      break;
 		    }//end switch
 	}//end listener
+
+	/**
+	 * @return the setZoomLvl
+	 */
+	public int getSetZoomLvl() {
+		return setZoomLvl;
+	}
+
+	/**
+	 * @param setZoomLvl the setZoomLvl to set
+	 */
+	public  void setSetZoomLvl(int setZoomLvl) {
+		this.setZoomLvl = setZoomLvl;
+	}
+	
+	
 }// end Activity
