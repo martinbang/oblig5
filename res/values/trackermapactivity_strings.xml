@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-     <string name="check_sattelite_view">Sattelite view</string>
-     <string name="check_street_view">Street view</string>
-     <string name="check_traffic_view">Traffic view</string>
+   
+     <string name="radio_sattelite_view">Satellite view</string>
+     <string name="radio_street_view">Street view</string>
 </resources>

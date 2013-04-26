@@ -7,37 +7,44 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="74dp" 
-        android:background="#d3d3d3">
+        android:layout_height="wrap_content"
+        android:background="#d3d3d3" >
 
-        <CheckBox
-            android:id="@+id/checkBoxSatteliteView"
+        <RadioGroup
+            android:id="@+id/radioGroupChangeView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true" >
+
+            <RadioButton
+                android:id="@+id/radioStreetView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/radio_street_view" />
+            <RadioButton
+            android:id="@+id/radioSatteliteView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:text="@string/check_sattelite_view" />
+            android:layout_toRightOf="@+id/radioGroupChangeView"
+            android:checked="false"
+            android:text="@string/radio_sattelite_view" />
 
-        <CheckBox
-            android:id="@+id/checkBoxStreetView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/checkBoxSatteliteView"
-            android:text="@string/check_street_view" />
-       
+        </RadioGroup>
+
+        
+
     </RelativeLayout>
 
-   
-   
-      <com.google.android.maps.MapView
-	  xmlns:android="http://schemas.android.com/apk/res/android"
-	  android:id="@+id/map_view"
-	  android:layout_width="fill_parent"
-	  android:layout_height="fill_parent"
-	  android:clickable="true"
-	  android:enabled="true"
-	  android:apiKey="0cGLoFe2hCC14k_nHkjMcMOZch_pHVjLtLcp_5g" />
-    
+    <com.google.android.maps.MapView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/map_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:apiKey="0cGLoFe2hCC14k_nHkjMcMOZch_pHVjLtLcp_5g"
+        android:clickable="true"
+        android:enabled="true" />
 
 </LinearLayout>

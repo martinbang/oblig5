@@ -3,9 +3,16 @@ package com.gpstracker;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.Menu;
 
-public class MainActivity extends Activity 
-{
+public class MainActivity extends Activity {
+	
+	
+	public static Activity activity;
+	public static Handler handler = new Handler();
+	public static Menu actionBarMenu;
+	
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {

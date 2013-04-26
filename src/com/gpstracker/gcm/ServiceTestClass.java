@@ -5,8 +5,10 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -17,6 +19,7 @@ import android.util.Log;
 
 import com.google.android.gcm.GCMRegistrar;
 import com.gpstracker.conf.Configuration;
+import com.gpstracker.map.PositionListener;
 
 public class ServiceTestClass 
 {
@@ -25,6 +28,7 @@ public class ServiceTestClass
 	public static String UNREGISTER_URN = "/unregister";
 	public static String UPDATEPOS_URN = "/pos";
 	public static String SEND_MESSAGE_URN = "/send";
+	private static List<PositionListener> positionListeners = new ArrayList<PositionListener>();
 	
 	public static void register(final Context context, String name)
 	{
@@ -76,6 +80,16 @@ public class ServiceTestClass
 		params.put("id", id + "");
 		params.put("rcv", receiver);
 		executePost(SERVER_URL + SEND_MESSAGE_URN, params);
+	}
+	
+	public static void addPositionListener(PositionListener listener) {
+		positionListeners.add(listener);
+	}
+	
+	public static void positionUpdate(double lat, double lng, int id, int color) {
+		for (PositionListener listener : positionListeners) {
+			listener.positionUpdate(lat, lng, id, color);
+		}
 	}
 	
 	private static void executePost(final String endpoint, final Map<String, String> params)

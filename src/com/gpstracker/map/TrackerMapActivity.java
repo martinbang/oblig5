@@ -1,10 +1,13 @@
 package com.gpstracker.map;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Criteria;
 import android.location.Location;
@@ -13,8 +16,8 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.CheckBox;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
@@ -26,31 +29,33 @@ import com.google.android.maps.OverlayItem;
 import com.gpstracker.R;
 import com.gpstracker.gcm.ServiceTestClass;
 
-public class TrackerMapActivity extends MapActivity implements LocationListener {
+/**
+ * 
+ *classe/aktivitet som brukes for å vise kart. kart i api v1.
+ *
+ */
+public class TrackerMapActivity extends MapActivity implements LocationListener , OnCheckedChangeListener{
 
 	public static MapView mapView;
-	private View view;
-	private MyItemizedOverlay itemizedOverlay;
 	private LocationManager locManger;
-	private GeoPoint point;
 	private MapController controller;
 	private String provider;
-	private CheckBox checkSatteliteView;
-	private CheckBox checkStreetView;
-	private OnClickListener checkBoxListener;
 	
-	private int updateMapMillisec = 5000;
+	private int updateMapMillisec = 1000;
 	private int updateMapMeters = 0;
-	private int setZoomLvl = 15;
+	private int setZoomLvl = 12;
 	
 	//Shared pref settings
 	public static final String SHARDE_PREFERENCES_NAME = "com.gps.location";
 	public static final String LATITUDE = "latitude";
 	public static final String LONGTITUDE = "longtitude";
+	public static final String COLOR = "color";
 
 	private boolean setZoomeEnable = true;
 	
-	private String FILENAME = "location";
+	private Map<Integer, Overlay> overlayMap = new HashMap<Integer, Overlay>();
+	
+	View view;
 	Context c;
 
 	@Override
@@ -62,8 +67,11 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 	
 		//Legger til kart i onCreate:
 		initMap();
+		
+		
 	}// end onCreate
 	
+
 	/**
 	 * Map preferences
 	 */
@@ -71,6 +79,8 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 		
 		 mapView = (MapView) findViewById(R.id.map_view);
 		 mapView.setBuiltInZoomControls(setZoomeEnable);
+		 controller = mapView.getController();
+		 controller.setZoom(setZoomLvl);
 
 		 locManger = (LocationManager) getSystemService(LOCATION_SERVICE);
 		 
@@ -89,11 +99,15 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 		}
 
 		locManger.requestLocationUpdates(provider, updateMapMillisec, updateMapMeters, this);
-
-		initCheckBoxes();
-		 
+		ServiceTestClass.addPositionListener(new PositionListener() {
+			@Override
+			public void positionUpdate(double lat, double lng, int id, int color) {
+				updateOverlay(lat, lng, id, color);
+			}
+		});
 	}//end initMap()
 
+	
 	@Override
 	protected boolean isRouteDisplayed() {
 		// TODO Auto-generated method stub
@@ -102,33 +116,15 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 
 	@Override
 	public void onLocationChanged(Location location) {
-		// TODO Auto-generated method stub
-
 		Log.v("OnLocationChanged", "Location changed");
 		
 		/**Henter lengde og breddegrad*/
 		double latitude = location.getLatitude();
 		double longtitude = location.getLongitude();
 		
-		/**lagrer posisjonene i Shared preferenses(Lagrer siste posisjon)*/
-		try {
-
-			SharedPreferences prefs = getApplicationContext()
-					.getSharedPreferences(SHARDE_PREFERENCES_NAME,
-							Context.MODE_WORLD_READABLE);
-			Editor editor = prefs.edit();
-			editor.putLong(LATITUDE, Double.doubleToLongBits(latitude));
-			editor.putLong(LONGTITUDE, Double.doubleToLongBits(longtitude));
-			editor.commit();
-
-			double l = Double.longBitsToDouble(prefs.getLong(LATITUDE, 0));
-			double ll = Double.longBitsToDouble(prefs.getLong(LONGTITUDE, 0));
-
-			//String s = Double.toString(l); For testing
-			//String s1 = Double.toString(ll); For Testin at den leser korrekt fra sharedpref.
-			try{
-				
-				ServiceTestClass.updatePosition(l, ll, this);
+		try {			
+			try{				
+				ServiceTestClass.updatePosition(latitude, longtitude, this);
 				Log.v("Updatepositions", "Posisions sendt");
 				
 			}catch(Exception e){
@@ -140,28 +136,48 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 			Log.v("Shared_PREFERNCE_ERROR", e.getMessage());
 		}
 		
-		toast("Lat: " + latitude + " Lon: " + longtitude);
+		mapView.invalidate();		
+		//updateOverlay(latitude, longtitude, -666, Color.BLACK);
 		
-		GeoPoint point = new GeoPoint((int) (latitude * 1E6),(int) (longtitude * 1E6));
-		//saveLocation((int)latitude, (int)longtitude);
-		controller = mapView.getController();
-		controller.animateTo(point);
-		controller.setZoom(setZoomLvl);
-
-		List<Overlay> mapOverlays = mapView.getOverlays();
-	
-		Drawable drawable = this.getResources().getDrawable(R.drawable.marker_red);
-		MyItemizedOverlay miO = new MyItemizedOverlay(drawable, this);
-		OverlayItem currentlocation = new OverlayItem(point," Current location", "Lat: " + latitude + " , " + " Long: " + longtitude);
-
-		miO.addOverlay(currentlocation);
-		Log.v("OverlayItem", " Current Location added");
-		mapOverlays.clear(); //settes denne fjerner den siste markør og viser kun siste posisjon
-		mapOverlays.add(miO);
 		Log.v("OMap overlay", "Overlay added");
+	}
+	
+	private Overlay buildOverlay(double lat, double lng, int color) {
+		Drawable drawable = this.getResources().getDrawable(R.drawable.marker);
+		drawable = setColor(drawable, Color.WHITE, color);
 		
+		MyItemizedOverlay miO = new MyItemizedOverlay(drawable, this);
+		GeoPoint point = new GeoPoint((int) (lat * 1E6),(int) (lng * 1E6));
+		OverlayItem currentlocation = new OverlayItem(point," Current location", "Lat: " + lat + " , " + " Long: " + lng);
+		
+		miO.addOverlay(currentlocation);
+		return miO;
+	}
+	
+	private Drawable setColor(Drawable drawable, int from, int to) {
+		Bitmap src = ((BitmapDrawable)drawable).getBitmap();
+		Bitmap bmp = src.copy(Bitmap.Config.ARGB_8888, true);
+		for (int x = 0; x < bmp.getWidth(); x++) {
+			for (int y = 0; y < bmp.getHeight(); y++) {
+				if (bmp.getPixel(x, y) == from) {
+					bmp.setPixel(x, y, to);
+				}
+			}
+		}		
+		return new BitmapDrawable(bmp);
 	}
 
+	private void updateOverlay(double lat, double lng, int id, int color) {
+		List<Overlay> mapOverlays = mapView.getOverlays();
+		if (overlayMap.containsKey(id)) {
+			mapOverlays.remove(overlayMap.get(id));
+		}
+		
+		Overlay overlay = buildOverlay(lat, lng, color);
+		overlayMap.put(id, overlay);
+		mapOverlays.add(overlay);
+	}
+	
 	@Override
 	public void onProviderDisabled(String provider) {
 		// TODO Auto-generated method stub
@@ -179,42 +195,6 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
 		// TODO Auto-generated method stub
-
-	}
-
-	/**
-	 * Check boks implementasjon for å vise satteliteview eller street view
-	 */
-	public void initCheckBoxes() {
-		checkSatteliteView = (CheckBox) findViewById(R.id.checkBoxSatteliteView);
-		checkStreetView = (CheckBox) findViewById(R.id.checkBoxStreetView);
-
-		checkBoxListener = new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-
-				if (checkSatteliteView.isChecked()) {
-					checkStreetView.setChecked(false);
-					mapView.setStreetView(false);
-					mapView.setSatellite(true);
-					Log.v("MapView", "Sattelite View enabled");
-
-				}
-				if (checkStreetView.isChecked()) {
-
-					checkSatteliteView.setChecked(false);
-					mapView.setSatellite(false);
-					mapView.setStreetView(true);
-					Log.v("MapView", "Street View enabled");
-				}
-
-			}
-		};
-		// legger til til i onClick lytteren for checkboxene
-		checkSatteliteView.setOnClickListener(checkBoxListener);
-		checkStreetView.setOnClickListener(checkBoxListener);
 
 	}
 
@@ -237,5 +217,12 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 		locManger.removeUpdates(this);
 	}
 
-	
+
+	/**
+	 * Brukes til å switche mellom mapview(Street og sattelite)
+	 */
+	@Override
+	public void onCheckedChanged(RadioGroup group, int checkedId) {
+		// TODO Auto-generated method stub
+	}//end listener
 }// end Activity
