@@ -5,6 +5,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
@@ -61,6 +62,9 @@ public class WidgetChangeListener implements TextWatcher, OnCheckedChangeListene
 			case R.id.editText_minutes:
 				conf.setMinutesBetweenSend(Integer.parseInt(et.getText().toString()));
 				break;
+			case R.id.editText_configuration_zoom_level:
+				conf.setZoomLevel(Integer.parseInt(et.getText().toString()));
+				break;
 			}
 			conf.commit(context);
 			
@@ -77,11 +81,9 @@ public class WidgetChangeListener implements TextWatcher, OnCheckedChangeListene
 	@Override
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) 
 	{
-		Switch s = (Switch)buttonView;
-		
 		Configuration conf = Configuration.getCurrentConfiguration(context);
 		EditText et = null;
-		switch(s.getId())
+		switch(buttonView.getId())
 		{
 		case R.id.switch_send_on_location_changed:
 			conf.setSendOnUserMoved(isChecked);

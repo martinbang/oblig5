@@ -1,20 +1,17 @@
 package com.gpstracker.conf;
 
-import android.annotation.SuppressLint;
+import com.gpstracker.R;
+
 import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Switch;
 
-import com.gpstracker.R;
-
-
-@SuppressLint("NewApi")
-public class ConfigurationFragment extends Fragment
+public class ConfigurationFragment_v4 extends Fragment
 {
 	View view;
 	
@@ -34,17 +31,15 @@ public class ConfigurationFragment extends Fragment
 	{
 		//Henter ut widgetene
 		EditText meters = (EditText)view.findViewById(R.id.editText_meters);
-		Switch onLocationChange = (Switch)view.findViewById(R.id.switch_send_on_location_changed);
+		CheckBox onLocationChange = (CheckBox)view.findViewById(R.id.switch_send_on_location_changed);
 		EditText minutes = (EditText)view.findViewById(R.id.editText_minutes);
-		Switch onMinutesPassed = (Switch)view.findViewById(R.id.switch_send_on_time_passed);
+		CheckBox onMinutesPassed = (CheckBox)view.findViewById(R.id.switch_send_on_time_passed);
 		EditText zoomLevel = (EditText)view.findViewById(R.id.editText_configuration_zoom_level);
 		
 		//Legger til widgetChangeListener
 		Activity activity = getActivity();
 		meters.addTextChangedListener(new WidgetChangeListener(meters, activity));
 		minutes.addTextChangedListener(new WidgetChangeListener(minutes, activity));
-		zoomLevel.addTextChangedListener(new WidgetChangeListener(zoomLevel, activity));
-		
 		onLocationChange.setOnCheckedChangeListener(new WidgetChangeListener(view, activity));
 		onMinutesPassed.setOnCheckedChangeListener(new WidgetChangeListener(view, activity));
 		
@@ -62,7 +57,6 @@ public class ConfigurationFragment extends Fragment
 		onMinutesPassed.setChecked(onTimePassed);
 		minutes.setEnabled(onTimePassed);
 		
-		zoomLevel.setText(conf.getZoomLevel() + "");
+		zoomLevel.setText(conf.getZoomLevel());
 	}
-
 }

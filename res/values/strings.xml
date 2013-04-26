@@ -20,5 +20,14 @@
 	<string name="configuration_fragment_title_send_location_on_location_change">Send location after passed n meters</string>
 	<string name="configuration_fragment_title_meters">Meters</string>
 	<string name="configuration_fragment_zoom_level">Zoom level</string>
+	<string name="incomming_message_type_1">personal message</string>
+	<string name="incomming_message_type_2">broadcast</string>
+	<string name="incomming_message_type_3">logged in</string>
+	<string name="incomming_message_type_4">logged out</string>
+	<string name="tab_log">messages</string>
+	<string name="tab_map">map</string>
+	<string name="tab_configuration">configuration</string>
+	<string name="tab_register">register</string>
+	<string name="v4button_unregister">unregister</string>
 	
 </resources>

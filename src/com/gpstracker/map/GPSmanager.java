@@ -1,6 +1,7 @@
 package com.gpstracker.map;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.View;
@@ -23,7 +24,7 @@ public class GPSmanager {
 	 * @param negMSg
 	 * @param context
 	 */
-	public GPSmanager(String title,String msg, String posMSG, String negMSg, final TrackerMapActivity context){
+	public GPSmanager(String title,String msg, String posMSG, String negMSg, final Context context){
 			
 		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
 		

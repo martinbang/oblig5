@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -93,9 +94,17 @@ public class ServiceTestClass
 	
 	private static void executePost(final String endpoint, final Map<String, String> params)
 	{
+		if(android.os.Build.VERSION.SDK_INT < 11)
+			executePostWithThread(endpoint, params);
+		 else
+			 executePostWithAsynchTask(endpoint, params);
+	}
+	
+	@SuppressLint("NewApi")
+	private static void executePostWithAsynchTask(final String endpoint, final Map<String, String> params)
+	{
 		AsyncTask.execute(new Runnable()
 		{
-
 			@Override
 			public void run() 
 			{
@@ -109,6 +118,27 @@ public class ServiceTestClass
 			}
 		});
 	}
+	
+	private static void executePostWithThread(final String endpoint, final Map<String, String> params)
+	{
+		Runnable run = new Runnable()
+		{
+			@Override
+			public void run() 
+			{
+				try 
+				{
+					post(endpoint, params);
+				} catch (IOException e) 
+				{
+					Log.d("ERROR", e.getMessage());
+				}
+			}
+		};
+		Thread t = new Thread(run);
+		t.start();
+	}
+	
 	
 	/**
 	 * Sender post forespørsel med parametre
@@ -163,6 +193,7 @@ public class ServiceTestClass
 			int status = conn.getResponseCode();
 			if(status != 200)
 			{
+				Log.e("POST", "status: " + status);
 				throw new IOException("Post failed with error code " + status);
 			}
 		}

@@ -11,7 +11,7 @@ public class Configuration
 	private static final boolean DEFAULT_SEND_ON_USER_MOVED = true;
 	private static final int DEFAULT_MINUTES_BETWEEN_SEND = 5;
 	private static final int DEFAULT_METERS_BETWEEN_SEND = 50;
-	private static final int DEFAULT_ZOOM_LEVEL = 8;
+	private static final int DEFAULT_ZOOM_LEVEL = 15;
 	private static final boolean DEFAULT_IS_REGISTERED = false;
 	private static final int DEFAULT_ID = -1;
 

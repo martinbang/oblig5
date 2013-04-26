@@ -10,6 +10,7 @@ import com.gpstracker.conf.Configuration;
 import com.gpstracker.gcm.ServiceTestClass;
 import com.gpstracker.log.LogFragment;
 import com.gpstracker.log.LogItem;
+import com.gpstracker.tab.GTTabListener;
 
 public class GCMIntentService extends GCMBaseIntentService
 {
@@ -24,24 +25,30 @@ public class GCMIntentService extends GCMBaseIntentService
 	private final String TAG_LOGNTITUDE = "lng";
 	
 	private final String ADMIN_COMMAND_DROP = "drop";
+	private final String ADMIN_COMMAND_MESSAGE = "message";
+	private final String ADMIN_COMMAND_POS = "pos";
+	private final String ADMIN_COMMAND_ID = "id";
 	
 	@Override
 	protected void onError(Context arg0, String arg1) 
 	{
-		// TODO Auto-generated method stub
 		
 	}
-
 	
 	@Override
 	protected void onMessage(Context context, Intent intent) 
 	{
 		Bundle extras = intent.getExtras();//henter extras fra intent.
+		String cmd = extras.getString(TAG_ADMIN_COMMAND);
 		
-		handleAdminCommand(context, extras);//Behandler eventuelle kommandoer fra admin
-		handleId(context, extras);//Om en id kommer alene, behandles den her
-		handleMessage(context, extras);//behandler beskjeder
-		handlePos(context, extras);//Oppdaterer posisjon
+		if(cmd.equals(ADMIN_COMMAND_DROP))
+			handleAdminCommand(context, extras);//Behandler eventuelle kommandoer fra admin
+		else if(cmd.equals(ADMIN_COMMAND_ID))
+			handleId(context, extras);//Om en id kommer alene, behandles den her
+		else if(cmd.equals(ADMIN_COMMAND_MESSAGE))
+			handleMessage(extras);//behandler beskjeder
+		else if(cmd.equals(ADMIN_COMMAND_POS))
+			handlePos(context, extras);//Oppdaterer posisjon
 	}
 	
 	/**
@@ -57,7 +64,7 @@ public class GCMIntentService extends GCMBaseIntentService
 			double latitude = Double.parseDouble(extras.getString(TAG_LATITUDE));
 			double longtitude = Double.parseDouble(extras.getString(TAG_LOGNTITUDE));
 			String colorStr = extras.getString(TAG_COLOR);//inkommende farge er på formatet "12,234,45". 
-			int color = LogItem.parseColorString(colorStr); //Dette blir gjort om til int-verdi som android forstår
+			int color = LogItem.parseColorString(colorStr);
 			
 			ServiceTestClass.positionUpdate(latitude, longtitude, id, color);
 			
@@ -76,7 +83,6 @@ public class GCMIntentService extends GCMBaseIntentService
 		catch(NullPointerException ne){Log.d("POS", "Nullpointer");}
 	}
 
-	
 	/**
 	 * Skjekker om inkommende intent har en id. Hvis den har det og det ikke er 
 	 * en kommando for å kaste noen ut, skal brukers id settes lik denne
@@ -99,6 +105,7 @@ public class GCMIntentService extends GCMBaseIntentService
 				conf.setId(id);
 				conf.commit(context);
 			}
+			
 		} catch(NumberFormatException e){}
 	}
 	
@@ -107,7 +114,7 @@ public class GCMIntentService extends GCMBaseIntentService
 	 * @param context
 	 * @param extras
 	 */
-	private void handleMessage(final Context context, Bundle extras)
+	private void handleMessage(Bundle extras)
 	{
 		try
 		{
@@ -118,24 +125,26 @@ public class GCMIntentService extends GCMBaseIntentService
 
 			final LogItem item = new LogItem(action, sender, msg, color);//Oppretter ett loggbart item
 			if(!action.equals("null"))
-				{
-				Log.d("MESSAGE", "melding: " + msg + " type: " + action + " sender: " + sender + " farge: " + color);
+				addLogItem(item);
 				
-				/*
-				 * Legger til ved å bruke Logfragmentets handler.
-				 */
-				LogFragment.handler.post(new Runnable()
-				{
-					@Override
-					public void run() 
-					{
-						Log.d("HANDLER", "run metoden kjører ");
-						LogFragment.addLogItem(LogFragment.context, item);
-					}
-				});
-			}
-			
 		} catch(NullPointerException e){}//Om det skjer en 
+	}
+	
+	private void addLogItem(final LogItem logItem)
+	{
+		Log.d("MESSAGE", "melding: " + logItem.message + " type: " + logItem.action + " sender: " + logItem.sender + " farge: " + logItem.color);
+		
+		/*
+		 * Legger til ved å bruke Logfragmentets handler.
+		 */
+		LogFragment.handler.post(new Runnable()
+		{
+			@Override
+			public void run() 
+			{
+				LogFragment.addLogItem(LogFragment.context, logItem);
+			}
+		});
 	}
 	
 	/**
@@ -158,16 +167,17 @@ public class GCMIntentService extends GCMBaseIntentService
 			Configuration conf = Configuration.getCurrentConfiguration(context); //Finner konfigurasjon
 			if(conf.getId() == dropId) //Hvis det var du som ble kastet ut
 			{
+				//TODO
 				conf.setRegistered(false); //setter registrert til false
 				conf.commit(context);//Lagrer
 				
 				//Bruker Mainactivitys handler til å oppdatere tab. Kartet skal ikke vises lengre, men registrerings fragmentet skal vises
-				MainActivity.handler.post(new Runnable()
+				MainActivity_v11.handler.post(new Runnable()
 				{
 					@Override
 					public void run() 
 					{
-						GTTabListener.initTabs(MainActivity.activity);
+						GTTabListener.initTabs(MainActivity_v11.activity);
 					}
 					
 				});
