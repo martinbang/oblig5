@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.google.android.gcm.GCMRegistrar;
 import com.gpstracker.conf.Configuration;
-import com.gpstracker.gcm.ServiceTestClass;
+import com.gpstracker.gcm.ServiceClass;
 import com.gpstracker.tab.GTTabListener;
 
 public class MainActivity_v11 extends Activity
@@ -84,11 +84,11 @@ public class MainActivity_v11 extends Activity
     		if(conf.getRegistered())//hvis du er registrert skal du avregistreres.
     		{
     			item.setIcon(android.R.drawable.button_onoff_indicator_off);
-    			ServiceTestClass.unRegister(this);
+    			ServiceClass.unRegister(this);
     		} else//Hvis du ikke er registrert skal du registreres
     		{
     			item.setIcon(android.R.drawable.button_onoff_indicator_on);
-    			ServiceTestClass.register(this, conf.getUserName());
+    			ServiceClass.register(this, conf.getUserName());
     		}
     		GTTabListener.initTabs(this);//Fanene blir oppdatert etter om du er pålogget eller ei
     	}

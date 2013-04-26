@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.gpstracker.R;
 import com.gpstracker.conf.Configuration;
-import com.gpstracker.gcm.ServiceTestClass;
+import com.gpstracker.gcm.ServiceClass;
 import com.gpstracker.tab.GTTabListener_v4;
 
 public class RegisterFragment_v4 extends Fragment implements OnClickListener
@@ -53,7 +53,7 @@ public class RegisterFragment_v4 extends Fragment implements OnClickListener
 		
 		if(!usrName.equals(""))
 		{
-			ServiceTestClass.register(activity, usrName);//Registrerer navnet på server
+			ServiceClass.register(activity, usrName);//Registrerer navnet på server
 	        GTTabListener_v4.initTabs(activity);//Registreringsfanen forsvinner. kart-fanen blir synlig
 		}else
 		{

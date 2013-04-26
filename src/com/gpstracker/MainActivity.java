@@ -17,7 +17,9 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        
+        /*
+         * Finner starter aktivitet etter hva slag os telefonen kjører
+         */
     	Intent i;
     	if(android.os.Build.VERSION.SDK_INT >= 11)
     		i = new Intent(this, MainActivity_v11.class);

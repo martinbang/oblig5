@@ -27,7 +27,7 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 import com.gpstracker.R;
-import com.gpstracker.gcm.ServiceTestClass;
+import com.gpstracker.gcm.ServiceClass;
 
 /**
  * 
@@ -99,7 +99,7 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 		}
 
 		locManger.requestLocationUpdates(provider, updateMapMillisec, updateMapMeters, this);
-		ServiceTestClass.addPositionListener(new PositionListener() {
+		ServiceClass.addPositionListener(new PositionListener() {
 			@Override
 			public void positionUpdate(double lat, double lng, int id, int color) {
 				updateOverlay(lat, lng, id, color);
@@ -128,7 +128,7 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 		
 		try {			
 			try{				
-				ServiceTestClass.updatePosition(latitude, longtitude, this);
+				ServiceClass.updatePosition(latitude, longtitude, this);
 				Log.v("Updatepositions", "Posisions sendt");
 				
 			}catch(Exception e){

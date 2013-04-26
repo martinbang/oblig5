@@ -16,7 +16,7 @@ import com.gpstracker.MainActivity;
 import com.gpstracker.MainActivity_v11;
 import com.gpstracker.R;
 import com.gpstracker.conf.Configuration;
-import com.gpstracker.gcm.ServiceTestClass;
+import com.gpstracker.gcm.ServiceClass;
 import com.gpstracker.tab.GTTabListener;
 
 @SuppressLint("NewApi")
@@ -60,7 +60,7 @@ public class RegisterFragment extends Fragment implements OnClickListener
 			conf.setUserName(usrName);//setter brukernavnet til det som stod i tekstfeltet
 			conf.setRegistered(true);//setter at bruker er registrert
 			conf.commit(activity);//oppdaterer
-			ServiceTestClass.register(activity, conf.getUserName());//Registrerer navnet på server
+			ServiceClass.register(activity, conf.getUserName());//Registrerer navnet på server
 	        GTTabListener.initTabs(activity);//Registreringsfanen forsvinner. kart-fanen blir synlig
 			MainActivity_v11.actionBarMenu.getItem(0).setIcon(android.R.drawable.button_onoff_indicator_on);//setter ikonet til menuitem til på. Mulig fordi vi gjorde den statisk i main activity
 		}else
