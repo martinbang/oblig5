@@ -108,9 +108,6 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 				updateOverlay(lat, lng, id, color);
 			}
 		});
-
-		
-		initRadioGroupe();
 	}//end initMap()
 
 	
@@ -148,15 +145,10 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 		Log.v("OMap overlay", "Overlay added");
 	}
 	
-<<<<<<< HEAD
-	private Overlay buildOverlay(double lat, double lng) {
-=======
 	private Overlay buildOverlay(double lat, double lng, int color) {
 		Drawable drawable = this.getResources().getDrawable(R.drawable.marker);
 		drawable = setColor(drawable, Color.WHITE, color);
->>>>>>> 6b2d6b3d1bb45a97a3cdf16a7f02f6ec04101b0d
 		
-		Drawable drawable = this.getResources().getDrawable(R.drawable.marker_red);
 		MyItemizedOverlay miO = new MyItemizedOverlay(drawable, this);
 		GeoPoint point = new GeoPoint((int) (lat * 1E6),(int) (lng * 1E6));
 		OverlayItem currentlocation = new OverlayItem(point," Current location", "Lat: " + lat + " , " + " Long: " + lng);
@@ -209,13 +201,6 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 
 	}
 
-	
-	public void initRadioGroupe(){
-		
-		((RadioGroup)findViewById(R.id.radioGroupChangeView)).setOnCheckedChangeListener(this);
-		
-	}
-
 	public void toast(String msg) {
 		Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
 	}
@@ -242,20 +227,5 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 	@Override
 	public void onCheckedChanged(RadioGroup group, int checkedId) {
 		// TODO Auto-generated method stub
-		switch (checkedId) {
-		case R.id.radioSatteliteView:
-			toast("sattelite view ON");
-			mapView.setStreetView(false);
-			mapView.setSatellite(true);
-			break;
-		case R.id.radioStreetView:
-			toast("Street view ON");
-			mapView.setSatellite(false);
-			mapView.setStreetView(true);
-			break;
-
-		default:
-			break;
-		}//end switch
 	}//end listener
 }// end Activity
