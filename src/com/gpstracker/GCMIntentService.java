@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ViewDebug.FlagToString;
 
 import com.google.android.gcm.GCMBaseIntentService;
 import com.gpstracker.conf.Configuration;
@@ -152,7 +153,7 @@ public class GCMIntentService extends GCMBaseIntentService
 	 * @param context
 	 * @param extras
 	 */
-	private void handleAdminCommand(Context context, Bundle extras)
+	private void handleAdminCommand(final Context context, Bundle extras)
 	{
 		String cmd = "";
 		cmd += extras.getString(TAG_ADMIN_COMMAND);
@@ -177,7 +178,11 @@ public class GCMIntentService extends GCMBaseIntentService
 					@Override
 					public void run() 
 					{
-						GTTabListener.initTabs(MainActivity_v11.activity);
+					    //GTTabListener.initTabs(MainActivity_v11.activity);
+						//hvis du blir kastet ut fra serveren, logges man ut og blir sendt til MainActivity
+						Intent i  = new Intent(context, MainActivity.class);
+						i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						context.startActivity(i);
 					}
 					
 				});
