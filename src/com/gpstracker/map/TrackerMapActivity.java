@@ -1,11 +1,7 @@
 package com.gpstracker.map;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.List;
 
-import android.app.Service;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -15,7 +11,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.test.ServiceTestCase;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;

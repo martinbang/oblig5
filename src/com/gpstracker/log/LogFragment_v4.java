@@ -1,11 +1,11 @@
 package com.gpstracker.log;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,9 +19,11 @@ import android.widget.Toast;
 import com.gpstracker.R;
 import com.gpstracker.conf.Configuration;
 import com.gpstracker.gcm.ServiceTestClass;
+import com.gpstracker.tab.GTTabListener_v4;
 
-public class LogFragment extends Fragment implements OnClickListener
+public class LogFragment_v4 extends Fragment implements OnClickListener
 {
+	
 	private static final String PREF_NAME = "preferes";
 	private static final String TYPES = "type";
 	private static final String SENDERS = "sender";
@@ -47,6 +49,10 @@ public class LogFragment extends Fragment implements OnClickListener
 			btn.setEnabled(false);
 		
 		btn.setOnClickListener(this);
+		
+		Button unregister = (Button)view.findViewById(R.id.v4button_unregister);
+		unregister.setVisibility(View.VISIBLE);
+		unregister.setOnClickListener(this);
 		
 		return view;
 	}
@@ -105,23 +111,30 @@ public class LogFragment extends Fragment implements OnClickListener
 	}
 
 	@Override
-	public void onClick(View arg0) 
+	public void onClick(View v) 
 	{
-		EditText receiver = (EditText)(view.findViewById(R.id.editText_actions_send));
-		EditText message = (EditText)(view.findViewById(R.id.editText_actions_message));
-		String receiverText = receiver.getText().toString();
-		String messageText = message.getText().toString();
-			
-		if(messageText.equals(""))
-			Toast.makeText(getActivity(), getResources().getString(R.string.log_fragment_message_not_set), Toast.LENGTH_SHORT).show();
-		else
+		if(v.getId() == R.id.button_actions_send)
 		{
-			ServiceTestClass.sendMessage(
-					Configuration.getCurrentConfiguration(getActivity()).getId(), 
-					messageText, receiverText);
-			
-			message.setText("");
-			receiver.setText("");
+			EditText receiver = (EditText)(view.findViewById(R.id.editText_actions_send));
+			EditText message = (EditText)(view.findViewById(R.id.editText_actions_message));
+			String receiverText = receiver.getText().toString();
+			String messageText = message.getText().toString();
+				
+			if(messageText.equals(""))
+				Toast.makeText(getActivity(), getResources().getString(R.string.log_fragment_message_not_set), Toast.LENGTH_SHORT).show();
+			else
+			{
+				ServiceTestClass.sendMessage(
+						Configuration.getCurrentConfiguration(getActivity()).getId(), 
+						messageText, receiverText);
+				
+				message.setText("");
+				receiver.setText("");
+			}
+		} else if(v.getId() == R.id.v4button_unregister)
+		{
+			ServiceTestClass.unRegister(getActivity());
+			GTTabListener_v4.initTabs(getActivity());
 		}
 	}
 }

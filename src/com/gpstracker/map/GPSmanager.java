@@ -4,9 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.sax.StartElementListener;
 import android.view.View;
-import android.widget.Toast;
 
 /**
  * Brukes til og lage alert dialoger for sjekking av GPs forbindelse
@@ -26,7 +24,7 @@ public class GPSmanager {
 	 * @param negMSg
 	 * @param context
 	 */
-	public GPSmanager(String title,String msg, String posMSG, String negMSg, final TrackerMapActivity context){
+	public GPSmanager(String title,String msg, String posMSG, String negMSg, final Context context){
 			
 		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
 		

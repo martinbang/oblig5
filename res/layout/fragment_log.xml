@@ -7,7 +7,7 @@
 	<ListView 
 	    android:id="@+id/listView_actions"
 	    android:layout_width="fill_parent"
-	    android:layout_height="200dp" />
+	    android:layout_height="100dp" />
 
 	<TextView
 	    android:id="@+id/textView_actions_send"
@@ -42,5 +42,12 @@
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:text="@string/log_fragment_title_button_send" />
+
+	<Button
+	    android:id="@+id/v4button_unregister"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:visibility="invisible"
+	    android:text="@string/v4button_unregister" />
 	
 </LinearLayout>

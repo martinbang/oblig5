@@ -1,8 +1,8 @@
-package com.gpstracker;
+package com.gpstracker.register;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -11,10 +11,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.gpstracker.R;
 import com.gpstracker.conf.Configuration;
 import com.gpstracker.gcm.ServiceTestClass;
+import com.gpstracker.tab.GTTabListener_v4;
 
-public class RegisterFragment extends Fragment implements OnClickListener
+public class RegisterFragment_v4 extends Fragment implements OnClickListener
 {
 	private Button loginBtn;
 	private EditText usrField;
@@ -46,17 +48,13 @@ public class RegisterFragment extends Fragment implements OnClickListener
 	@Override
 	public void onClick(View v) 
 	{
-		Activity activity = getActivity();//Da vi skal bruke activity flere ganger tenker jeg det er like greit å instansiere ett objekt av det.
-		Configuration conf = Configuration.getCurrentConfiguration(activity);//Finner instillinger
+		FragmentActivity activity = getActivity();//Da vi skal bruke activity flere ganger tenker jeg det er like greit å instansiere ett objekt av det.
 		String usrName = usrField.getText().toString(); //henter brukernavn fra tekstfeltet i appen
+		
 		if(!usrName.equals(""))
 		{
-			conf.setUserName(usrName);//setter brukernavnet til det som stod i tekstfeltet
-			conf.setRegistered(true);//setter at bruker er registrert
-			conf.commit(activity);//oppdaterer
-			ServiceTestClass.register(activity, conf.getUserName());//Registrerer navnet på server
-	        GTTabListener.initTabs(activity);//Registreringsfanen forsvinner. kart-fanen blir synlig
-			MainActivity.actionBarMenu.getItem(0).setIcon(android.R.drawable.button_onoff_indicator_on);//setter ikonet til menuitem til på. Mulig fordi vi gjorde den statisk i main activity
+			ServiceTestClass.register(activity, usrName);//Registrerer navnet på server
+	        GTTabListener_v4.initTabs(activity);//Registreringsfanen forsvinner. kart-fanen blir synlig
 		}else
 		{
 			Toast.makeText(activity, getResources().getString(R.string.register_fragment_name_not_set), Toast.LENGTH_SHORT).show(); //om navnet ikke var satt skal ikke registreringen utføres

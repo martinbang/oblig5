@@ -1,5 +1,6 @@
-package com.gpstracker;
+package com.gpstracker.register;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
@@ -11,9 +12,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.gpstracker.MainActivity;
+import com.gpstracker.MainActivity_v11;
+import com.gpstracker.R;
 import com.gpstracker.conf.Configuration;
 import com.gpstracker.gcm.ServiceTestClass;
+import com.gpstracker.tab.GTTabListener;
 
+@SuppressLint("NewApi")
 public class RegisterFragment extends Fragment implements OnClickListener
 {
 	private Button loginBtn;
@@ -56,7 +62,7 @@ public class RegisterFragment extends Fragment implements OnClickListener
 			conf.commit(activity);//oppdaterer
 			ServiceTestClass.register(activity, conf.getUserName());//Registrerer navnet på server
 	        GTTabListener.initTabs(activity);//Registreringsfanen forsvinner. kart-fanen blir synlig
-			MainActivity.actionBarMenu.getItem(0).setIcon(android.R.drawable.button_onoff_indicator_on);//setter ikonet til menuitem til på. Mulig fordi vi gjorde den statisk i main activity
+			MainActivity_v11.actionBarMenu.getItem(0).setIcon(android.R.drawable.button_onoff_indicator_on);//setter ikonet til menuitem til på. Mulig fordi vi gjorde den statisk i main activity
 		}else
 		{
 			Toast.makeText(activity, getResources().getString(R.string.register_fragment_name_not_set), Toast.LENGTH_SHORT).show(); //om navnet ikke var satt skal ikke registreringen utføres

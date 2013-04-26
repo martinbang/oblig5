@@ -1,5 +1,6 @@
-package com.gpstracker;
+package com.gpstracker.tab;
 
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
@@ -14,7 +15,10 @@ import com.gpstracker.conf.Configuration;
 import com.gpstracker.conf.ConfigurationFragment;
 import com.gpstracker.log.LogFragment;
 import com.gpstracker.map.TrackerMapActivity;
+import com.gpstracker.register.RegisterFragment;
 
+
+@SuppressLint("NewApi")
 public class GTTabListener<T extends Fragment> implements TabListener
 {
 	private Fragment fragment;
@@ -35,6 +39,9 @@ public class GTTabListener<T extends Fragment> implements TabListener
 		this.fragmentClass = cls;
 	}
 	
+	
+	
+	
 	public static void initTabs(Activity activity)
 	{
 		initTabs(activity, activity.getActionBar());
@@ -47,9 +54,9 @@ public class GTTabListener<T extends Fragment> implements TabListener
     	//ActionBar actionBar = activity.getActionBar();
     	actionBar.removeAllTabs();
     	actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+    	int currentApiLevel = android.os.Build.VERSION.SDK_INT;
     	
-    	
-    	if(!conf.getRegistered())
+    	if(!conf.getRegistered() && currentApiLevel >= 11)
     		addTab(context, actionBar, "Registrer", "registration", RegisterFragment.class);
     	
     	addTab(context, actionBar, "Log", "log", LogFragment.class);
@@ -58,9 +65,8 @@ public class GTTabListener<T extends Fragment> implements TabListener
     		addMapTab(context, actionBar);
     	
     	addTab(context, actionBar, "Instillinger", "configurations", ConfigurationFragment.class);
-    
-    	
     }
+    
     
     private static void addMapTab(final Context context, ActionBar actionBar)
     {
