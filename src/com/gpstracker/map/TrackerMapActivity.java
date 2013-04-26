@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.PorterDuff.Mode;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Criteria;
 import android.location.Location;
@@ -92,8 +96,8 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 		locManger.requestLocationUpdates(provider, updateMapMillisec, updateMapMeters, this);
 		ServiceTestClass.addPositionListener(new PositionListener() {
 			@Override
-			public void positionUpdate(double lat, double lng, int id) {
-				updateOverlay(lat, lng, id);
+			public void positionUpdate(double lat, double lng, int id, int color) {
+				updateOverlay(lat, lng, id, color);
 			}
 		});
 
@@ -131,13 +135,14 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 		}
 		
 		mapView.invalidate();		
-		updateOverlay(latitude, longtitude, -666);
+		//updateOverlay(latitude, longtitude, -666, Color.BLACK);
 		
-		Log.v("OMap overlay", "Overlay added");		
+		Log.v("OMap overlay", "Overlay added");
 	}
 	
-	private Overlay buildOverlay(double lat, double lng) {
-		Drawable drawable = this.getResources().getDrawable(R.drawable.marker_red);
+	private Overlay buildOverlay(double lat, double lng, int color) {
+		Drawable drawable = this.getResources().getDrawable(R.drawable.marker);
+		drawable = setColor(drawable, Color.WHITE, color);
 		
 		MyItemizedOverlay miO = new MyItemizedOverlay(drawable, this);
 		GeoPoint point = new GeoPoint((int) (lat * 1E6),(int) (lng * 1E6));
@@ -146,14 +151,27 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 		miO.addOverlay(currentlocation);
 		return miO;
 	}
+	
+	private Drawable setColor(Drawable drawable, int from, int to) {
+		Bitmap src = ((BitmapDrawable)drawable).getBitmap();
+		Bitmap bmp = src.copy(Bitmap.Config.ARGB_8888, true);
+		for (int x = 0; x < bmp.getWidth(); x++) {
+			for (int y = 0; y < bmp.getHeight(); y++) {
+				if (bmp.getPixel(x, y) == from) {
+					bmp.setPixel(x, y, to);
+				}
+			}
+		}		
+		return new BitmapDrawable(bmp);
+	}
 
-	private void updateOverlay(double lat, double lng, int id) {
+	private void updateOverlay(double lat, double lng, int id, int color) {
 		List<Overlay> mapOverlays = mapView.getOverlays();
 		if (overlayMap.containsKey(id)) {
 			mapOverlays.remove(overlayMap.get(id));
 		}
 		
-		Overlay overlay = buildOverlay(lat, lng);
+		Overlay overlay = buildOverlay(lat, lng, color);
 		overlayMap.put(id, overlay);
 		mapOverlays.add(overlay);
 	}

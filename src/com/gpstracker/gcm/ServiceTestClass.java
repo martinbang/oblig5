@@ -85,9 +85,9 @@ public class ServiceTestClass
 		positionListeners.add(listener);
 	}
 	
-	public static void positionUpdate(double lat, double lng, int id) {
+	public static void positionUpdate(double lat, double lng, int id, int color) {
 		for (PositionListener listener : positionListeners) {
-			listener.positionUpdate(lat, lng, id);
+			listener.positionUpdate(lat, lng, id, color);
 		}
 	}
 	

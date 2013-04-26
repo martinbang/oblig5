@@ -72,7 +72,7 @@ public class GCMIntentService extends GCMBaseIntentService
 			String colorStr = extras.getString(TAG_COLOR);//inkommende farge er på formatet "12,234,45". 
 			int color = LogItem.parseColorString(colorStr); //Dette blir gjort om til int-verdi som android forstår
 			
-			ServiceTestClass.positionUpdate(latitude, longtitude, id);
+			ServiceTestClass.positionUpdate(latitude, longtitude, id, color);
 			
 			Log.d("POS", "Ny posisjon id:" + id + " lat: " + latitude + "lng: " + longtitude + " color: " + colorStr);
 			
