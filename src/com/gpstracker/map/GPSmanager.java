@@ -1,12 +1,9 @@
 package com.gpstracker.map;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.sax.StartElementListener;
 import android.view.View;
-import android.widget.Toast;
 
 /**
  * Brukes til og lage alert dialoger for sjekking av GPs forbindelse

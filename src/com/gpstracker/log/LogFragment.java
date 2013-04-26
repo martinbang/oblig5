@@ -16,7 +16,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.gpstracker.MainActivity;
 import com.gpstracker.R;
 import com.gpstracker.conf.Configuration;
 import com.gpstracker.gcm.ServiceTestClass;

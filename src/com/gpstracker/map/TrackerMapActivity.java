@@ -14,7 +14,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.CheckBox;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
@@ -26,15 +28,17 @@ import com.google.android.maps.OverlayItem;
 import com.gpstracker.R;
 import com.gpstracker.gcm.ServiceTestClass;
 
-public class TrackerMapActivity extends MapActivity implements LocationListener {
+/**
+ * 
+ *classe/aktivitet som brukes for å vise kart. kart i api v1.
+ *
+ */
+public class TrackerMapActivity extends MapActivity implements LocationListener , OnCheckedChangeListener{
 
 	public static MapView mapView;
 	private LocationManager locManger;
 	private MapController controller;
 	private String provider;
-	private CheckBox checkSatteliteView;
-	private CheckBox checkStreetView;
-	private OnClickListener checkBoxListener;
 	
 	private int updateMapMillisec = 1000;
 	private int updateMapMeters = 0;
@@ -50,6 +54,7 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 	
 	private Map<Integer, Overlay> overlayMap = new HashMap<Integer, Overlay>();
 	
+	View view;
 	Context c;
 
 	@Override
@@ -61,8 +66,11 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 	
 		//Legger til kart i onCreate:
 		initMap();
+		
+		
 	}// end onCreate
 	
+
 	/**
 	 * Map preferences
 	 */
@@ -97,8 +105,8 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 			}
 		});
 
-		initCheckBoxes();
-		 
+		
+		initRadioGroupe();
 	}//end initMap()
 
 	
@@ -137,8 +145,8 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 	}
 	
 	private Overlay buildOverlay(double lat, double lng) {
-		Drawable drawable = this.getResources().getDrawable(R.drawable.marker_red);
 		
+		Drawable drawable = this.getResources().getDrawable(R.drawable.marker_red);
 		MyItemizedOverlay miO = new MyItemizedOverlay(drawable, this);
 		GeoPoint point = new GeoPoint((int) (lat * 1E6),(int) (lng * 1E6));
 		OverlayItem currentlocation = new OverlayItem(point," Current location", "Lat: " + lat + " , " + " Long: " + lng);
@@ -178,40 +186,11 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 
 	}
 
-	/**
-	 * Check boks implementasjon for å vise satteliteview eller street view
-	 */
-	public void initCheckBoxes() {
-		checkSatteliteView = (CheckBox) findViewById(R.id.checkBoxSatteliteView);
-		checkStreetView = (CheckBox) findViewById(R.id.checkBoxStreetView);
-
-		checkBoxListener = new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-
-				if (checkSatteliteView.isChecked()) {
-					checkStreetView.setChecked(false);
-					mapView.setStreetView(false);
-					mapView.setSatellite(true);
-					Log.v("MapView", "Sattelite View enabled");
-
-				}
-				if (checkStreetView.isChecked()) {
-
-					checkSatteliteView.setChecked(false);
-					mapView.setSatellite(false);
-					mapView.setStreetView(true);
-					Log.v("MapView", "Street View enabled");
-				}
-
-			}
-		};
-		// legger til til i onClick lytteren for checkboxene
-		checkSatteliteView.setOnClickListener(checkBoxListener);
-		checkStreetView.setOnClickListener(checkBoxListener);
-
+	
+	public void initRadioGroupe(){
+		
+		((RadioGroup)findViewById(R.id.radioGroupChangeView)).setOnCheckedChangeListener(this);
+		
 	}
 
 	public void toast(String msg) {
@@ -232,4 +211,28 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 		super.onDestroy();
 		locManger.removeUpdates(this);
 	}
+
+
+	/**
+	 * Brukes til å switche mellom mapview(Street og sattelite)
+	 */
+	@Override
+	public void onCheckedChanged(RadioGroup group, int checkedId) {
+		// TODO Auto-generated method stub
+		switch (checkedId) {
+		case R.id.radioSatteliteView:
+			toast("sattelite view ON");
+			mapView.setStreetView(false);
+			mapView.setSatellite(true);
+			break;
+		case R.id.radioStreetView:
+			toast("Street view ON");
+			mapView.setSatellite(false);
+			mapView.setStreetView(true);
+			break;
+
+		default:
+			break;
+		}//end switch
+	}//end listener
 }// end Activity

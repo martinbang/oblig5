@@ -1,28 +1,15 @@
 package com.gpstracker;
 
-import java.text.NumberFormat;
-
-import junit.framework.Test;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gcm.GCMBaseIntentService;
-import com.google.android.maps.MyLocationOverlay;
 import com.gpstracker.conf.Configuration;
 import com.gpstracker.gcm.ServiceTestClass;
 import com.gpstracker.log.LogFragment;
 import com.gpstracker.log.LogItem;
-import com.gpstracker.map.MyItemizedOverlay;
-import com.gpstracker.map.TrackerMapActivity;
 
 public class GCMIntentService extends GCMBaseIntentService
 {

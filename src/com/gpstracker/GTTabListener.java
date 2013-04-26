@@ -13,7 +13,6 @@ import android.util.Log;
 import com.gpstracker.conf.Configuration;
 import com.gpstracker.conf.ConfigurationFragment;
 import com.gpstracker.log.LogFragment;
-import com.gpstracker.map.GPSmanager;
 import com.gpstracker.map.TrackerMapActivity;
 
 public class GTTabListener<T extends Fragment> implements TabListener

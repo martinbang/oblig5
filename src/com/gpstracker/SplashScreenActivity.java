@@ -3,7 +3,6 @@ package com.gpstracker;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
@@ -17,7 +16,7 @@ public class SplashScreenActivity extends Activity {
 	//tag for LOG, brukes for å sjekke at ting kjører
 	private static String TAG = SplashScreenActivity.class.getName();
 	//sleep timer er  tiden tråden "sover", får den kjører en intent å skifter aktivitet
-	private static long SLEEP = 3500;
+	private static long SLEEP = 3;
 	
 	/** (non-Javadoc)
 	 * @see android.app.Activity#onCreate(android.os.Bundle)

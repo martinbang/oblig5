@@ -14,8 +14,6 @@ import com.google.android.maps.OverlayItem;
 
 public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 	
-	private Context context;
-
 	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
 
 	public MyItemizedOverlay(Drawable defaultMarker, Context ctx) {
@@ -35,11 +33,6 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 		addOverlay(oi);
 	}
 	
-//	public void setAllUserPos(Context context, double lon, double lat, int color, int id){
-		
-		
-//	}
-
 	public void clear() {
 
 		mOverlays.clear();
@@ -60,5 +53,17 @@ public class MyItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 	protected boolean onTap(int index) {
 		return true;
 	}
+
+	/* (non-Javadoc)
+	 * @see com.google.android.maps.ItemizedOverlay#draw(android.graphics.Canvas, com.google.android.maps.MapView, boolean)
+	 */
+	@Override
+	public void draw(Canvas canvas, MapView mapView, boolean shadow) {
+		// TODO Auto-generated method stub
+		super.draw(canvas,mapView,shadow);
+	}
+	
+	
+	
 	
 }//end class
