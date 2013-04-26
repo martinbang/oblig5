@@ -21,7 +21,7 @@ import com.google.android.gcm.GCMRegistrar;
 import com.gpstracker.conf.Configuration;
 import com.gpstracker.map.PositionListener;
 
-public class ServiceTestClass 
+public class ServiceClass 
 {
 	public static String SERVER_URL = "http://kenh.dyndns.org/android5/tomcat";
 	public static String REGISTER_URN = "/register";

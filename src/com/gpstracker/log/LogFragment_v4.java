@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 import com.gpstracker.R;
 import com.gpstracker.conf.Configuration;
-import com.gpstracker.gcm.ServiceTestClass;
+import com.gpstracker.gcm.ServiceClass;
 import com.gpstracker.tab.GTTabListener_v4;
 
 public class LogFragment_v4 extends Fragment implements OnClickListener
@@ -40,7 +40,7 @@ public class LogFragment_v4 extends Fragment implements OnClickListener
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		view = inflater.inflate(R.layout.fragment_log, container, false);
-		updateList(getActivity());
+		updateList(getActivity()); //Oppdaterer logitems lista
 		context = getActivity();
 		
 		Button btn = (Button)view.findViewById(R.id.button_actions_send);
@@ -57,18 +57,24 @@ public class LogFragment_v4 extends Fragment implements OnClickListener
 		return view;
 	}
 	
+	/**
+	 * Henter LogItems fra shared preferences. 
+	 * legger alle logitems i en array
+	 * @param context
+	 * @return
+	 */
 	private static LogItem[] getLogItems(Context context)
 	{
 		SharedPreferences sp = context.getSharedPreferences(PREF_NAME, 0);
-		int count = sp.getInt(COUNT, 0);
+		int count = sp.getInt(COUNT, 0); //Henter logitems fra lista
 		LogItem[] items = new LogItem[count];
 		
-		if(count == 0)
+		if(count == 0) //Oppretter en melding slik at det ikke skal være tomt
 			return new LogItem[]{new LogItem(	context.getResources().getString(R.string.log_default_action), 
-												context.getResources().getString(R.string.log_default_sender), 
+												context.getResources().getString(R.string.app_name), 
 												context.getResources().getString(R.string.log_default_message))};
 		else
-			for(int i = 0; i < items.length; i++)
+			for(int i = 0; i < items.length; i++) //Legger items inn i array
 				items[i] = new LogItem
 						(
 						sp.getString(TYPES + i, ""), 
@@ -79,16 +85,26 @@ public class LogFragment_v4 extends Fragment implements OnClickListener
 		return items;
 	}
 	
+	/**
+	 * Henter logitems fra shared preferences, Putter de i lista som vises i fragmentet, 
+	 * Setter adapter til å være vår spesialbygde adapter. scroller lista ned
+	 * @param context
+	 */
 	public static void updateList(Context context)
 	{
-		LogItem[] items = getLogItems(context);
+		LogItem[] items = getLogItems(context); //Henter log items
 		
-		logArrayAdapter = new LogArrayAdapter(context, R.layout.log_fragment_row, items);
-		ListView list = (ListView)view.findViewById(R.id.listView_actions);
-		list.setAdapter(logArrayAdapter);
-		list.setSelection(logArrayAdapter.getCount() - 1);
+		logArrayAdapter = new LogArrayAdapter(context, R.layout.log_fragment_row, items); //Oppretter en logArrayAdapter
+		ListView list = (ListView)view.findViewById(R.id.listView_actions); //Henter ut listviewet
+		list.setAdapter(logArrayAdapter); //setter adapter til listviewet
+		list.setSelection(logArrayAdapter.getCount() - 1); //Scroller ned
 	}
 	
+	/**
+	 * Legger til ett logitem i lista over logitems i shared preferences
+	 * @param context
+	 * @param item
+	 */
 	public static void addLogItem(Context context, LogItem item)
 	{
 		try
@@ -97,7 +113,8 @@ public class LogFragment_v4 extends Fragment implements OnClickListener
 			Editor edit = sp.edit();
 			int count = sp.getInt(COUNT, 0);
 			
-			edit.putString(TYPES + count, item.action);
+			/*fordeler parametrene og setter de i på hver sin plass*/
+			edit.putString(TYPES + count, item.action); 
 			edit.putString(SENDERS + count, item.sender);
 			edit.putString(MESSAGES + count, item.message);
 			edit.putInt(COLOR + count, item.color);
@@ -110,6 +127,9 @@ public class LogFragment_v4 extends Fragment implements OnClickListener
 		}
 	}
 
+	/**
+	 * Det som skjer når bruker trykker på send
+	 */
 	@Override
 	public void onClick(View v) 
 	{
@@ -120,20 +140,26 @@ public class LogFragment_v4 extends Fragment implements OnClickListener
 			String receiverText = receiver.getText().toString();
 			String messageText = message.getText().toString();
 				
-			if(messageText.equals(""))
+			if(messageText.equals(""))//Skal ikke sende om messagefeltet er tomt
 				Toast.makeText(getActivity(), getResources().getString(R.string.log_fragment_message_not_set), Toast.LENGTH_SHORT).show();
 			else
-			{
-				ServiceTestClass.sendMessage(
+			{	//Sender melding
+				ServiceClass.sendMessage(
 						Configuration.getCurrentConfiguration(getActivity()).getId(), 
 						messageText, receiverText);
-				
+				if(!receiverText.equals(""))//Hvis dette var en privat melding
+				{
+					LogItem item = new LogItem(getResources().getString(R.string.incomming_message_type_2) + "=> " 
+							+ receiverText, Configuration.getCurrentConfiguration(getActivity()).getUserName(), messageText);
+					LogFragment.addLogItem(item); //Logges meldingen hos denne enheten
+				}
+				//Feltene tømmes
 				message.setText("");
 				receiver.setText("");
 			}
-		} else if(v.getId() == R.id.v4button_unregister)
+		} else if(v.getId() == R.id.v4button_unregister)//Avregistreringsknapp. brukes kun på eldre telefoner
 		{
-			ServiceTestClass.unRegister(getActivity());
+			ServiceClass.unRegister(getActivity());
 			GTTabListener_v4.initTabs(getActivity());
 		}
 	}

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">GpsTracker</string>
+    <string name="action_settings">Settings</string>
+	<string name="register_fragment_label_username">Brukernavn</string>
+	<string name="register_fragment_button_login">Logg inn</string>
+	<string name="register_fragment_name_not_set">Brukernavn er ikke satt</string>
+	<string name="log_fragment_message_not_set">Melding har ikke blitt satt</string>
+	<string name="log_fragment_row_title_action">Type: </string>
+	<string name="log_fragment_row_title_sender">Sender: </string>
+	<string name="log_fragment_row_title_message">Melding: </string>
+	<string name="log_default_action">Melding</string>
+	<string name="log_default_message">Ingen hendelser har blitt loggført</string>
+	<string name="log_fragment_title_receiver">Mottaker:</string>
+	<string name="log_fragment_title_button_send">send</string>
+	<string name="log_logged_out"> logget ut</string>
+	<string name="log_you_logged_out">Du logget ut</string>
+	<string name="log_user">bruker </string>
+	<string name="configuration_fragment_title_send_location_on_time_change">Send posisjon etter n minutter</string>
+	<string name="configuration_fragment_title_minutes">Minutter</string>
+	<string name="configuration_fragment_title_send_location_on_location_change">Send posisjon etter forflyttet n meter</string>
+	<string name="configuration_fragment_title_meters">Meter</string>
+	<string name="configuration_fragment_zoom_level">Zoom nivå</string>
+	<string name="incomming_message_type_1">personlig melding</string>
+	<string name="incomming_message_type_2">kringkasting</string>
+	<string name="incomming_message_type_3">logget inn</string>
+	<string name="incomming_message_type_4">logget ut</string>
+	<string name="tab_log">meldinger</string>
+	<string name="tab_map">kart</string>
+	<string name="tab_configuration">innstillinger</string>
+	<string name="tab_register">registrer</string>
+	<string name="v4button_unregister">avregistrer</string>
+	
+</resources>

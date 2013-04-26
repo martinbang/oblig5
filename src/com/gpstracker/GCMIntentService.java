@@ -8,7 +8,7 @@ import android.view.ViewDebug.FlagToString;
 
 import com.google.android.gcm.GCMBaseIntentService;
 import com.gpstracker.conf.Configuration;
-import com.gpstracker.gcm.ServiceTestClass;
+import com.gpstracker.gcm.ServiceClass;
 import com.gpstracker.log.LogFragment;
 import com.gpstracker.log.LogItem;
 import com.gpstracker.tab.GTTabListener;
@@ -20,15 +20,16 @@ public class GCMIntentService extends GCMBaseIntentService
 	private final String TAG_SENDER = "snd";
 	private final String TAG_DESCRIPTION = "des";
 	private final String TAG_COLOR = "clr";
-	
 	private final String TAG_ADMIN_COMMAND = "cmd";
 	private final String TAG_LATITUDE = "lat";
 	private final String TAG_LOGNTITUDE = "lng";
+	private final String TAG_NAME = "name";
 	
 	private final String ADMIN_COMMAND_DROP = "drop";
 	private final String ADMIN_COMMAND_MESSAGE = "message";
 	private final String ADMIN_COMMAND_POS = "pos";
 	private final String ADMIN_COMMAND_ID = "id";
+	private final String ADMIN_COMMAND_NEW_USER = "new";
 	
 	@Override
 	protected void onError(Context arg0, String arg1) 
@@ -50,6 +51,20 @@ public class GCMIntentService extends GCMBaseIntentService
 			handleMessage(extras);//behandler beskjeder
 		else if(cmd.equals(ADMIN_COMMAND_POS))
 			handlePos(context, extras);//Oppdaterer posisjon
+		else if(cmd.equals(ADMIN_COMMAND_NEW_USER))
+			handleNewUser(extras);//Registrerer at en ny bruker ble lagt til
+			
+	}
+	
+	private void handleNewUser(Bundle extras)
+	{
+		String name = extras.getString(TAG_NAME);
+		if(!Configuration.getCurrentConfiguration(this).getUserName().equals(name))
+		{
+			LogItem item = new LogItem(getResources().getString(R.string.incomming_message_type_3), getResources().getString(R.string.app_name), 
+					name + " " + getResources().getString(R.string.log_logged_out));
+			LogFragment.addLogItem(item);
+		}
 	}
 	
 	/**
@@ -67,17 +82,9 @@ public class GCMIntentService extends GCMBaseIntentService
 			String colorStr = extras.getString(TAG_COLOR);//inkommende farge er på formatet "12,234,45". 
 			int color = LogItem.parseColorString(colorStr);
 			
-			ServiceTestClass.positionUpdate(latitude, longtitude, id, color);
+			ServiceClass.positionUpdate(latitude, longtitude, id, color);
 			
 			Log.d("POS", "Ny posisjon id:" + id + " lat: " + latitude + "lng: " + longtitude + " color: " + colorStr);
-			
-			/*SharedPreferences prefs = getApplicationContext()
-					.getSharedPreferences("TEST",
-							Context.MODE_APPEND);
-			Editor editor = prefs.edit();
-			editor.putLong("latitude", Double.doubleToLongBits(latitude));
-			editor.putLong("longtitude", Double.doubleToLongBits(longtitude));
-			editor.commit();*/
 			
 		} 
 		catch(NumberFormatException e){Log.d("POS", e.getMessage());}
@@ -107,6 +114,9 @@ public class GCMIntentService extends GCMBaseIntentService
 				conf.commit(context);
 			}
 			
+			LogItem item = new LogItem(getResources().getString(R.string.incomming_message_type_3), getResources().getString(R.string.app_name), "du logget inn");
+			LogFragment.addLogItem(item);
+			
 		} catch(NumberFormatException e){}
 	}
 	
@@ -123,29 +133,17 @@ public class GCMIntentService extends GCMBaseIntentService
 			String action = extras.getString(TAG_DESCRIPTION); //om det er en privat melding eller en offentlig melding
 			String sender = extras.getString(TAG_SENDER);//hvem som sendte meldingen
 			String color = extras.getString(TAG_COLOR);//Fargekoden til avsender
-
-			final LogItem item = new LogItem(action, sender, msg, color);//Oppretter ett loggbart item
+			String type;
+			
+			if(action.equals("1"))//Finner ut om det er en privat eller offentlig melding
+				type = this.getResources().getString(R.string.incomming_message_type_1);
+			else type = this.getResources().getString(R.string.incomming_message_type_2);
+			
+			final LogItem item = new LogItem(type, sender, msg, color);//Oppretter ett loggbart item
 			if(!action.equals("null"))
-				addLogItem(item);
+				LogFragment.addLogItem(item);
 				
 		} catch(NullPointerException e){}//Om det skjer en 
-	}
-	
-	private void addLogItem(final LogItem logItem)
-	{
-		Log.d("MESSAGE", "melding: " + logItem.message + " type: " + logItem.action + " sender: " + logItem.sender + " farge: " + logItem.color);
-		
-		/*
-		 * Legger til ved å bruke Logfragmentets handler.
-		 */
-		LogFragment.handler.post(new Runnable()
-		{
-			@Override
-			public void run() 
-			{
-				LogFragment.addLogItem(LogFragment.context, logItem);
-			}
-		});
 	}
 	
 	/**
@@ -172,20 +170,27 @@ public class GCMIntentService extends GCMBaseIntentService
 				conf.setRegistered(false); //setter registrert til false
 				conf.commit(context);//Lagrer
 				
+				LogItem item = new LogItem(this.getResources().getString(R.string.incomming_message_type_4), 
+						this.getResources().getString(R.string.app_name), getResources().getString(R.string.log_you_logged_out));
+				LogFragment.addLogItem(item);
+				
 				//Bruker Mainactivitys handler til å oppdatere tab. Kartet skal ikke vises lengre, men registrerings fragmentet skal vises
 				MainActivity_v11.handler.post(new Runnable()
 				{
 					@Override
 					public void run() 
 					{
-					    //GTTabListener.initTabs(MainActivity_v11.activity);
 						//hvis du blir kastet ut fra serveren, logges man ut og blir sendt til MainActivity
 						Intent i  = new Intent(context, MainActivity.class);
 						i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 						context.startActivity(i);
 					}
-					
 				});
+			} else
+			{
+				LogItem item = new LogItem(getResources().getString(R.string.incomming_message_type_4), getResources().getString(R.string.app_name), 
+						getResources().getString(R.string.log_user) + extras.getString(TAG_NAME) + getResources().getString(R.string.log_logged_out));
+				LogFragment.addLogItem(item);
 			}
 		}
 	}
