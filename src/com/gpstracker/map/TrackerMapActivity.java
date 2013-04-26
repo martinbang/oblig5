@@ -70,11 +70,8 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 	
 		//Legger til kart i onCreate:
 		initMap();
-		
-		
 	}// end onCreate
 	
-
 	/**
 	 * Map preferences
 	 */
@@ -82,6 +79,7 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 		
 		 mapView = (MapView) findViewById(R.id.map_view);
 		 mapView.setBuiltInZoomControls(setZoomeEnable);
+		 mapView.setStreetView(true);
 		 controller = mapView.getController();
 		 controller.setZoom(setZoomLvl);
 
@@ -108,6 +106,7 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 				updateOverlay(lat, lng, id, color);
 			}
 		});
+		initRadioGroupe();
 	}//end initMap()
 
 	
@@ -116,7 +115,10 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 		// TODO Auto-generated method stub
 		return false;
 	}
-
+	/**
+	 * Methode fra LocationListener, methoden brukes for å oppdatere lokasjonen/er på kartet
+	 * når posisjonene endrere seg.
+	 */
 	@Override
 	public void onLocationChanged(Location location) {
 		Log.v("OnLocationChanged", "Location changed");
@@ -219,7 +221,12 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 		super.onDestroy();
 		locManger.removeUpdates(this);
 	}
-
+	
+	public void initRadioGroupe(){
+		    
+	((RadioGroup)findViewById(R.id.radioGroupChangeView)).setOnCheckedChangeListener(this);
+		    
+    } 
 
 	/**
 	 * Brukes til å switche mellom mapview(Street og sattelite)
@@ -227,5 +234,21 @@ public class TrackerMapActivity extends MapActivity implements LocationListener 
 	@Override
 	public void onCheckedChanged(RadioGroup group, int checkedId) {
 		// TODO Auto-generated method stub
+		
+		switch (checkedId) {
+		    case R.id.radioSatteliteView:
+		      toast("sattelite view ON");
+		      mapView.setStreetView(false);
+		      mapView.setSatellite(true);
+		      break;
+		    case R.id.radioStreetView:
+		      toast("Street view ON");
+		      mapView.setSatellite(false);
+		      mapView.setStreetView(true);
+		      break;
+		
+		   default:
+		      break;
+		    }//end switch
 	}//end listener
 }// end Activity
