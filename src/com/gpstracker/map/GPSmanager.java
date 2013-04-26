@@ -42,6 +42,7 @@ public class GPSmanager {
 					// TODO Auto-generated method stub
 					Intent callGPSSettingIntent = new Intent(
                             android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+					callGPSSettingIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					context.startActivity(callGPSSettingIntent);
 
 				}
